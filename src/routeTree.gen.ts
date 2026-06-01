@@ -9,38 +9,659 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VenueRouteImport } from './routes/venue'
+import { Route as ScannerRouteImport } from './routes/scanner'
+import { Route as OrganizerRouteImport } from './routes/organizer'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VenueIndexRouteImport } from './routes/venue.index'
+import { Route as ScannerIndexRouteImport } from './routes/scanner.index'
+import { Route as OrganizerIndexRouteImport } from './routes/organizer.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as VenueRevenueRouteImport } from './routes/venue.revenue'
+import { Route as VenueAnalyticsRouteImport } from './routes/venue.analytics'
+import { Route as ScannerScanRouteImport } from './routes/scanner.scan'
+import { Route as OrganizerVerifyRouteImport } from './routes/organizer.verify'
+import { Route as OrganizerTransactionsRouteImport } from './routes/organizer.transactions'
+import { Route as OrganizerSplashRouteImport } from './routes/organizer.splash'
+import { Route as OrganizerSettingsRouteImport } from './routes/organizer.settings'
+import { Route as OrganizerRsvpRouteImport } from './routes/organizer.rsvp'
+import { Route as OrganizerProfileSetupRouteImport } from './routes/organizer.profile-setup'
+import { Route as OrganizerNotificationsRouteImport } from './routes/organizer.notifications'
+import { Route as OrganizerLoginRouteImport } from './routes/organizer.login'
+import { Route as OrganizerDashboardRouteImport } from './routes/organizer.dashboard'
+import { Route as AdminVenuesRouteImport } from './routes/admin.venues'
+import { Route as AdminSupportRouteImport } from './routes/admin.support'
+import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
+import { Route as AdminPackagesRouteImport } from './routes/admin.packages'
+import { Route as AdminOrganizersRouteImport } from './routes/admin.organizers'
+import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as VenueEventsIndexRouteImport } from './routes/venue.events.index'
+import { Route as VenueCreditsIndexRouteImport } from './routes/venue.credits.index'
+import { Route as OrganizerInviteIndexRouteImport } from './routes/organizer.invite.index'
+import { Route as OrganizerEventsIndexRouteImport } from './routes/organizer.events.index'
+import { Route as OrganizerDelegationIndexRouteImport } from './routes/organizer.delegation.index'
+import { Route as InviteIdIndexRouteImport } from './routes/invite.$id.index'
+import { Route as VenueEventsNewRouteImport } from './routes/venue.events.new'
+import { Route as VenueEventsIdRouteImport } from './routes/venue.events.$id'
+import { Route as VenueCreditsBuyRouteImport } from './routes/venue.credits.buy'
+import { Route as ScannerResultStateRouteImport } from './routes/scanner.result.$state'
+import { Route as OrganizerInviteSingleRouteImport } from './routes/organizer.invite.single'
+import { Route as OrganizerInviteManualRouteImport } from './routes/organizer.invite.manual'
+import { Route as OrganizerInviteHistoryRouteImport } from './routes/organizer.invite.history'
+import { Route as OrganizerInviteGroupRouteImport } from './routes/organizer.invite.group'
+import { Route as OrganizerInviteContactsRouteImport } from './routes/organizer.invite.contacts'
+import { Route as OrganizerEventsNewRouteImport } from './routes/organizer.events.new'
+import { Route as OrganizerEventsIdRouteImport } from './routes/organizer.events.$id'
+import { Route as OrganizerDelegationAllocateRouteImport } from './routes/organizer.delegation.allocate'
+import { Route as OrganizerCreditsLedgerRouteImport } from './routes/organizer.credits.ledger'
+import { Route as OrganizerCreditsBuyRouteImport } from './routes/organizer.credits.buy'
+import { Route as InviteIdWalletRouteImport } from './routes/invite.$id.wallet'
+import { Route as InviteIdQrRouteImport } from './routes/invite.$id.qr'
 
+const VenueRoute = VenueRouteImport.update({
+  id: '/venue',
+  path: '/venue',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScannerRoute = ScannerRouteImport.update({
+  id: '/scanner',
+  path: '/scanner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizerRoute = OrganizerRouteImport.update({
+  id: '/organizer',
+  path: '/organizer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VenueIndexRoute = VenueIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VenueRoute,
+} as any)
+const ScannerIndexRoute = ScannerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ScannerRoute,
+} as any)
+const OrganizerIndexRoute = OrganizerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const VenueRevenueRoute = VenueRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => VenueRoute,
+} as any)
+const VenueAnalyticsRoute = VenueAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => VenueRoute,
+} as any)
+const ScannerScanRoute = ScannerScanRouteImport.update({
+  id: '/scan',
+  path: '/scan',
+  getParentRoute: () => ScannerRoute,
+} as any)
+const OrganizerVerifyRoute = OrganizerVerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerTransactionsRoute = OrganizerTransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerSplashRoute = OrganizerSplashRouteImport.update({
+  id: '/splash',
+  path: '/splash',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerSettingsRoute = OrganizerSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerRsvpRoute = OrganizerRsvpRouteImport.update({
+  id: '/rsvp',
+  path: '/rsvp',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerProfileSetupRoute = OrganizerProfileSetupRouteImport.update({
+  id: '/profile-setup',
+  path: '/profile-setup',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerNotificationsRoute = OrganizerNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerLoginRoute = OrganizerLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerDashboardRoute = OrganizerDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const AdminVenuesRoute = AdminVenuesRouteImport.update({
+  id: '/venues',
+  path: '/venues',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRevenueRoute = AdminRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPackagesRoute = AdminPackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOrganizersRoute = AdminOrganizersRouteImport.update({
+  id: '/organizers',
+  path: '/organizers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const VenueEventsIndexRoute = VenueEventsIndexRouteImport.update({
+  id: '/events/',
+  path: '/events/',
+  getParentRoute: () => VenueRoute,
+} as any)
+const VenueCreditsIndexRoute = VenueCreditsIndexRouteImport.update({
+  id: '/credits/',
+  path: '/credits/',
+  getParentRoute: () => VenueRoute,
+} as any)
+const OrganizerInviteIndexRoute = OrganizerInviteIndexRouteImport.update({
+  id: '/invite/',
+  path: '/invite/',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerEventsIndexRoute = OrganizerEventsIndexRouteImport.update({
+  id: '/events/',
+  path: '/events/',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerDelegationIndexRoute =
+  OrganizerDelegationIndexRouteImport.update({
+    id: '/delegation/',
+    path: '/delegation/',
+    getParentRoute: () => OrganizerRoute,
+  } as any)
+const InviteIdIndexRoute = InviteIdIndexRouteImport.update({
+  id: '/invite/$id/',
+  path: '/invite/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenueEventsNewRoute = VenueEventsNewRouteImport.update({
+  id: '/events/new',
+  path: '/events/new',
+  getParentRoute: () => VenueRoute,
+} as any)
+const VenueEventsIdRoute = VenueEventsIdRouteImport.update({
+  id: '/events/$id',
+  path: '/events/$id',
+  getParentRoute: () => VenueRoute,
+} as any)
+const VenueCreditsBuyRoute = VenueCreditsBuyRouteImport.update({
+  id: '/credits/buy',
+  path: '/credits/buy',
+  getParentRoute: () => VenueRoute,
+} as any)
+const ScannerResultStateRoute = ScannerResultStateRouteImport.update({
+  id: '/result/$state',
+  path: '/result/$state',
+  getParentRoute: () => ScannerRoute,
+} as any)
+const OrganizerInviteSingleRoute = OrganizerInviteSingleRouteImport.update({
+  id: '/invite/single',
+  path: '/invite/single',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerInviteManualRoute = OrganizerInviteManualRouteImport.update({
+  id: '/invite/manual',
+  path: '/invite/manual',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerInviteHistoryRoute = OrganizerInviteHistoryRouteImport.update({
+  id: '/invite/history',
+  path: '/invite/history',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerInviteGroupRoute = OrganizerInviteGroupRouteImport.update({
+  id: '/invite/group',
+  path: '/invite/group',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerInviteContactsRoute = OrganizerInviteContactsRouteImport.update({
+  id: '/invite/contacts',
+  path: '/invite/contacts',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerEventsNewRoute = OrganizerEventsNewRouteImport.update({
+  id: '/events/new',
+  path: '/events/new',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerEventsIdRoute = OrganizerEventsIdRouteImport.update({
+  id: '/events/$id',
+  path: '/events/$id',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerDelegationAllocateRoute =
+  OrganizerDelegationAllocateRouteImport.update({
+    id: '/delegation/allocate',
+    path: '/delegation/allocate',
+    getParentRoute: () => OrganizerRoute,
+  } as any)
+const OrganizerCreditsLedgerRoute = OrganizerCreditsLedgerRouteImport.update({
+  id: '/credits/ledger',
+  path: '/credits/ledger',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerCreditsBuyRoute = OrganizerCreditsBuyRouteImport.update({
+  id: '/credits/buy',
+  path: '/credits/buy',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const InviteIdWalletRoute = InviteIdWalletRouteImport.update({
+  id: '/invite/$id/wallet',
+  path: '/invite/$id/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteIdQrRoute = InviteIdQrRouteImport.update({
+  id: '/invite/$id/qr',
+  path: '/invite/$id/qr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/organizer': typeof OrganizerRouteWithChildren
+  '/scanner': typeof ScannerRouteWithChildren
+  '/venue': typeof VenueRouteWithChildren
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/organizers': typeof AdminOrganizersRoute
+  '/admin/packages': typeof AdminPackagesRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/venues': typeof AdminVenuesRoute
+  '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/login': typeof OrganizerLoginRoute
+  '/organizer/notifications': typeof OrganizerNotificationsRoute
+  '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
+  '/organizer/rsvp': typeof OrganizerRsvpRoute
+  '/organizer/settings': typeof OrganizerSettingsRoute
+  '/organizer/splash': typeof OrganizerSplashRoute
+  '/organizer/transactions': typeof OrganizerTransactionsRoute
+  '/organizer/verify': typeof OrganizerVerifyRoute
+  '/scanner/scan': typeof ScannerScanRoute
+  '/venue/analytics': typeof VenueAnalyticsRoute
+  '/venue/revenue': typeof VenueRevenueRoute
+  '/admin/': typeof AdminIndexRoute
+  '/organizer/': typeof OrganizerIndexRoute
+  '/scanner/': typeof ScannerIndexRoute
+  '/venue/': typeof VenueIndexRoute
+  '/invite/$id/qr': typeof InviteIdQrRoute
+  '/invite/$id/wallet': typeof InviteIdWalletRoute
+  '/organizer/credits/buy': typeof OrganizerCreditsBuyRoute
+  '/organizer/credits/ledger': typeof OrganizerCreditsLedgerRoute
+  '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
+  '/organizer/events/$id': typeof OrganizerEventsIdRoute
+  '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/organizer/invite/contacts': typeof OrganizerInviteContactsRoute
+  '/organizer/invite/group': typeof OrganizerInviteGroupRoute
+  '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
+  '/organizer/invite/manual': typeof OrganizerInviteManualRoute
+  '/organizer/invite/single': typeof OrganizerInviteSingleRoute
+  '/scanner/result/$state': typeof ScannerResultStateRoute
+  '/venue/credits/buy': typeof VenueCreditsBuyRoute
+  '/venue/events/$id': typeof VenueEventsIdRoute
+  '/venue/events/new': typeof VenueEventsNewRoute
+  '/invite/$id/': typeof InviteIdIndexRoute
+  '/organizer/delegation/': typeof OrganizerDelegationIndexRoute
+  '/organizer/events/': typeof OrganizerEventsIndexRoute
+  '/organizer/invite/': typeof OrganizerInviteIndexRoute
+  '/venue/credits/': typeof VenueCreditsIndexRoute
+  '/venue/events/': typeof VenueEventsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/organizers': typeof AdminOrganizersRoute
+  '/admin/packages': typeof AdminPackagesRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/venues': typeof AdminVenuesRoute
+  '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/login': typeof OrganizerLoginRoute
+  '/organizer/notifications': typeof OrganizerNotificationsRoute
+  '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
+  '/organizer/rsvp': typeof OrganizerRsvpRoute
+  '/organizer/settings': typeof OrganizerSettingsRoute
+  '/organizer/splash': typeof OrganizerSplashRoute
+  '/organizer/transactions': typeof OrganizerTransactionsRoute
+  '/organizer/verify': typeof OrganizerVerifyRoute
+  '/scanner/scan': typeof ScannerScanRoute
+  '/venue/analytics': typeof VenueAnalyticsRoute
+  '/venue/revenue': typeof VenueRevenueRoute
+  '/admin': typeof AdminIndexRoute
+  '/organizer': typeof OrganizerIndexRoute
+  '/scanner': typeof ScannerIndexRoute
+  '/venue': typeof VenueIndexRoute
+  '/invite/$id/qr': typeof InviteIdQrRoute
+  '/invite/$id/wallet': typeof InviteIdWalletRoute
+  '/organizer/credits/buy': typeof OrganizerCreditsBuyRoute
+  '/organizer/credits/ledger': typeof OrganizerCreditsLedgerRoute
+  '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
+  '/organizer/events/$id': typeof OrganizerEventsIdRoute
+  '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/organizer/invite/contacts': typeof OrganizerInviteContactsRoute
+  '/organizer/invite/group': typeof OrganizerInviteGroupRoute
+  '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
+  '/organizer/invite/manual': typeof OrganizerInviteManualRoute
+  '/organizer/invite/single': typeof OrganizerInviteSingleRoute
+  '/scanner/result/$state': typeof ScannerResultStateRoute
+  '/venue/credits/buy': typeof VenueCreditsBuyRoute
+  '/venue/events/$id': typeof VenueEventsIdRoute
+  '/venue/events/new': typeof VenueEventsNewRoute
+  '/invite/$id': typeof InviteIdIndexRoute
+  '/organizer/delegation': typeof OrganizerDelegationIndexRoute
+  '/organizer/events': typeof OrganizerEventsIndexRoute
+  '/organizer/invite': typeof OrganizerInviteIndexRoute
+  '/venue/credits': typeof VenueCreditsIndexRoute
+  '/venue/events': typeof VenueEventsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/organizer': typeof OrganizerRouteWithChildren
+  '/scanner': typeof ScannerRouteWithChildren
+  '/venue': typeof VenueRouteWithChildren
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/organizers': typeof AdminOrganizersRoute
+  '/admin/packages': typeof AdminPackagesRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/venues': typeof AdminVenuesRoute
+  '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/login': typeof OrganizerLoginRoute
+  '/organizer/notifications': typeof OrganizerNotificationsRoute
+  '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
+  '/organizer/rsvp': typeof OrganizerRsvpRoute
+  '/organizer/settings': typeof OrganizerSettingsRoute
+  '/organizer/splash': typeof OrganizerSplashRoute
+  '/organizer/transactions': typeof OrganizerTransactionsRoute
+  '/organizer/verify': typeof OrganizerVerifyRoute
+  '/scanner/scan': typeof ScannerScanRoute
+  '/venue/analytics': typeof VenueAnalyticsRoute
+  '/venue/revenue': typeof VenueRevenueRoute
+  '/admin/': typeof AdminIndexRoute
+  '/organizer/': typeof OrganizerIndexRoute
+  '/scanner/': typeof ScannerIndexRoute
+  '/venue/': typeof VenueIndexRoute
+  '/invite/$id/qr': typeof InviteIdQrRoute
+  '/invite/$id/wallet': typeof InviteIdWalletRoute
+  '/organizer/credits/buy': typeof OrganizerCreditsBuyRoute
+  '/organizer/credits/ledger': typeof OrganizerCreditsLedgerRoute
+  '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
+  '/organizer/events/$id': typeof OrganizerEventsIdRoute
+  '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/organizer/invite/contacts': typeof OrganizerInviteContactsRoute
+  '/organizer/invite/group': typeof OrganizerInviteGroupRoute
+  '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
+  '/organizer/invite/manual': typeof OrganizerInviteManualRoute
+  '/organizer/invite/single': typeof OrganizerInviteSingleRoute
+  '/scanner/result/$state': typeof ScannerResultStateRoute
+  '/venue/credits/buy': typeof VenueCreditsBuyRoute
+  '/venue/events/$id': typeof VenueEventsIdRoute
+  '/venue/events/new': typeof VenueEventsNewRoute
+  '/invite/$id/': typeof InviteIdIndexRoute
+  '/organizer/delegation/': typeof OrganizerDelegationIndexRoute
+  '/organizer/events/': typeof OrganizerEventsIndexRoute
+  '/organizer/invite/': typeof OrganizerInviteIndexRoute
+  '/venue/credits/': typeof VenueCreditsIndexRoute
+  '/venue/events/': typeof VenueEventsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/organizer'
+    | '/scanner'
+    | '/venue'
+    | '/admin/audit'
+    | '/admin/notifications'
+    | '/admin/organizers'
+    | '/admin/packages'
+    | '/admin/revenue'
+    | '/admin/support'
+    | '/admin/venues'
+    | '/organizer/dashboard'
+    | '/organizer/login'
+    | '/organizer/notifications'
+    | '/organizer/profile-setup'
+    | '/organizer/rsvp'
+    | '/organizer/settings'
+    | '/organizer/splash'
+    | '/organizer/transactions'
+    | '/organizer/verify'
+    | '/scanner/scan'
+    | '/venue/analytics'
+    | '/venue/revenue'
+    | '/admin/'
+    | '/organizer/'
+    | '/scanner/'
+    | '/venue/'
+    | '/invite/$id/qr'
+    | '/invite/$id/wallet'
+    | '/organizer/credits/buy'
+    | '/organizer/credits/ledger'
+    | '/organizer/delegation/allocate'
+    | '/organizer/events/$id'
+    | '/organizer/events/new'
+    | '/organizer/invite/contacts'
+    | '/organizer/invite/group'
+    | '/organizer/invite/history'
+    | '/organizer/invite/manual'
+    | '/organizer/invite/single'
+    | '/scanner/result/$state'
+    | '/venue/credits/buy'
+    | '/venue/events/$id'
+    | '/venue/events/new'
+    | '/invite/$id/'
+    | '/organizer/delegation/'
+    | '/organizer/events/'
+    | '/organizer/invite/'
+    | '/venue/credits/'
+    | '/venue/events/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin/audit'
+    | '/admin/notifications'
+    | '/admin/organizers'
+    | '/admin/packages'
+    | '/admin/revenue'
+    | '/admin/support'
+    | '/admin/venues'
+    | '/organizer/dashboard'
+    | '/organizer/login'
+    | '/organizer/notifications'
+    | '/organizer/profile-setup'
+    | '/organizer/rsvp'
+    | '/organizer/settings'
+    | '/organizer/splash'
+    | '/organizer/transactions'
+    | '/organizer/verify'
+    | '/scanner/scan'
+    | '/venue/analytics'
+    | '/venue/revenue'
+    | '/admin'
+    | '/organizer'
+    | '/scanner'
+    | '/venue'
+    | '/invite/$id/qr'
+    | '/invite/$id/wallet'
+    | '/organizer/credits/buy'
+    | '/organizer/credits/ledger'
+    | '/organizer/delegation/allocate'
+    | '/organizer/events/$id'
+    | '/organizer/events/new'
+    | '/organizer/invite/contacts'
+    | '/organizer/invite/group'
+    | '/organizer/invite/history'
+    | '/organizer/invite/manual'
+    | '/organizer/invite/single'
+    | '/scanner/result/$state'
+    | '/venue/credits/buy'
+    | '/venue/events/$id'
+    | '/venue/events/new'
+    | '/invite/$id'
+    | '/organizer/delegation'
+    | '/organizer/events'
+    | '/organizer/invite'
+    | '/venue/credits'
+    | '/venue/events'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/organizer'
+    | '/scanner'
+    | '/venue'
+    | '/admin/audit'
+    | '/admin/notifications'
+    | '/admin/organizers'
+    | '/admin/packages'
+    | '/admin/revenue'
+    | '/admin/support'
+    | '/admin/venues'
+    | '/organizer/dashboard'
+    | '/organizer/login'
+    | '/organizer/notifications'
+    | '/organizer/profile-setup'
+    | '/organizer/rsvp'
+    | '/organizer/settings'
+    | '/organizer/splash'
+    | '/organizer/transactions'
+    | '/organizer/verify'
+    | '/scanner/scan'
+    | '/venue/analytics'
+    | '/venue/revenue'
+    | '/admin/'
+    | '/organizer/'
+    | '/scanner/'
+    | '/venue/'
+    | '/invite/$id/qr'
+    | '/invite/$id/wallet'
+    | '/organizer/credits/buy'
+    | '/organizer/credits/ledger'
+    | '/organizer/delegation/allocate'
+    | '/organizer/events/$id'
+    | '/organizer/events/new'
+    | '/organizer/invite/contacts'
+    | '/organizer/invite/group'
+    | '/organizer/invite/history'
+    | '/organizer/invite/manual'
+    | '/organizer/invite/single'
+    | '/scanner/result/$state'
+    | '/venue/credits/buy'
+    | '/venue/events/$id'
+    | '/venue/events/new'
+    | '/invite/$id/'
+    | '/organizer/delegation/'
+    | '/organizer/events/'
+    | '/organizer/invite/'
+    | '/venue/credits/'
+    | '/venue/events/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  OrganizerRoute: typeof OrganizerRouteWithChildren
+  ScannerRoute: typeof ScannerRouteWithChildren
+  VenueRoute: typeof VenueRouteWithChildren
+  InviteIdQrRoute: typeof InviteIdQrRoute
+  InviteIdWalletRoute: typeof InviteIdWalletRoute
+  InviteIdIndexRoute: typeof InviteIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/venue': {
+      id: '/venue'
+      path: '/venue'
+      fullPath: '/venue'
+      preLoaderRoute: typeof VenueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scanner': {
+      id: '/scanner'
+      path: '/scanner'
+      fullPath: '/scanner'
+      preLoaderRoute: typeof ScannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/organizer': {
+      id: '/organizer'
+      path: '/organizer'
+      fullPath: '/organizer'
+      preLoaderRoute: typeof OrganizerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +669,452 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/venue/': {
+      id: '/venue/'
+      path: '/'
+      fullPath: '/venue/'
+      preLoaderRoute: typeof VenueIndexRouteImport
+      parentRoute: typeof VenueRoute
+    }
+    '/scanner/': {
+      id: '/scanner/'
+      path: '/'
+      fullPath: '/scanner/'
+      preLoaderRoute: typeof ScannerIndexRouteImport
+      parentRoute: typeof ScannerRoute
+    }
+    '/organizer/': {
+      id: '/organizer/'
+      path: '/'
+      fullPath: '/organizer/'
+      preLoaderRoute: typeof OrganizerIndexRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/venue/revenue': {
+      id: '/venue/revenue'
+      path: '/revenue'
+      fullPath: '/venue/revenue'
+      preLoaderRoute: typeof VenueRevenueRouteImport
+      parentRoute: typeof VenueRoute
+    }
+    '/venue/analytics': {
+      id: '/venue/analytics'
+      path: '/analytics'
+      fullPath: '/venue/analytics'
+      preLoaderRoute: typeof VenueAnalyticsRouteImport
+      parentRoute: typeof VenueRoute
+    }
+    '/scanner/scan': {
+      id: '/scanner/scan'
+      path: '/scan'
+      fullPath: '/scanner/scan'
+      preLoaderRoute: typeof ScannerScanRouteImport
+      parentRoute: typeof ScannerRoute
+    }
+    '/organizer/verify': {
+      id: '/organizer/verify'
+      path: '/verify'
+      fullPath: '/organizer/verify'
+      preLoaderRoute: typeof OrganizerVerifyRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/transactions': {
+      id: '/organizer/transactions'
+      path: '/transactions'
+      fullPath: '/organizer/transactions'
+      preLoaderRoute: typeof OrganizerTransactionsRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/splash': {
+      id: '/organizer/splash'
+      path: '/splash'
+      fullPath: '/organizer/splash'
+      preLoaderRoute: typeof OrganizerSplashRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/settings': {
+      id: '/organizer/settings'
+      path: '/settings'
+      fullPath: '/organizer/settings'
+      preLoaderRoute: typeof OrganizerSettingsRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/rsvp': {
+      id: '/organizer/rsvp'
+      path: '/rsvp'
+      fullPath: '/organizer/rsvp'
+      preLoaderRoute: typeof OrganizerRsvpRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/profile-setup': {
+      id: '/organizer/profile-setup'
+      path: '/profile-setup'
+      fullPath: '/organizer/profile-setup'
+      preLoaderRoute: typeof OrganizerProfileSetupRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/notifications': {
+      id: '/organizer/notifications'
+      path: '/notifications'
+      fullPath: '/organizer/notifications'
+      preLoaderRoute: typeof OrganizerNotificationsRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/login': {
+      id: '/organizer/login'
+      path: '/login'
+      fullPath: '/organizer/login'
+      preLoaderRoute: typeof OrganizerLoginRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/dashboard': {
+      id: '/organizer/dashboard'
+      path: '/dashboard'
+      fullPath: '/organizer/dashboard'
+      preLoaderRoute: typeof OrganizerDashboardRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/admin/venues': {
+      id: '/admin/venues'
+      path: '/venues'
+      fullPath: '/admin/venues'
+      preLoaderRoute: typeof AdminVenuesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/revenue': {
+      id: '/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AdminRevenueRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/packages': {
+      id: '/admin/packages'
+      path: '/packages'
+      fullPath: '/admin/packages'
+      preLoaderRoute: typeof AdminPackagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/organizers': {
+      id: '/admin/organizers'
+      path: '/organizers'
+      fullPath: '/admin/organizers'
+      preLoaderRoute: typeof AdminOrganizersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/venue/events/': {
+      id: '/venue/events/'
+      path: '/events'
+      fullPath: '/venue/events/'
+      preLoaderRoute: typeof VenueEventsIndexRouteImport
+      parentRoute: typeof VenueRoute
+    }
+    '/venue/credits/': {
+      id: '/venue/credits/'
+      path: '/credits'
+      fullPath: '/venue/credits/'
+      preLoaderRoute: typeof VenueCreditsIndexRouteImport
+      parentRoute: typeof VenueRoute
+    }
+    '/organizer/invite/': {
+      id: '/organizer/invite/'
+      path: '/invite'
+      fullPath: '/organizer/invite/'
+      preLoaderRoute: typeof OrganizerInviteIndexRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/events/': {
+      id: '/organizer/events/'
+      path: '/events'
+      fullPath: '/organizer/events/'
+      preLoaderRoute: typeof OrganizerEventsIndexRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/delegation/': {
+      id: '/organizer/delegation/'
+      path: '/delegation'
+      fullPath: '/organizer/delegation/'
+      preLoaderRoute: typeof OrganizerDelegationIndexRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/invite/$id/': {
+      id: '/invite/$id/'
+      path: '/invite/$id'
+      fullPath: '/invite/$id/'
+      preLoaderRoute: typeof InviteIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venue/events/new': {
+      id: '/venue/events/new'
+      path: '/events/new'
+      fullPath: '/venue/events/new'
+      preLoaderRoute: typeof VenueEventsNewRouteImport
+      parentRoute: typeof VenueRoute
+    }
+    '/venue/events/$id': {
+      id: '/venue/events/$id'
+      path: '/events/$id'
+      fullPath: '/venue/events/$id'
+      preLoaderRoute: typeof VenueEventsIdRouteImport
+      parentRoute: typeof VenueRoute
+    }
+    '/venue/credits/buy': {
+      id: '/venue/credits/buy'
+      path: '/credits/buy'
+      fullPath: '/venue/credits/buy'
+      preLoaderRoute: typeof VenueCreditsBuyRouteImport
+      parentRoute: typeof VenueRoute
+    }
+    '/scanner/result/$state': {
+      id: '/scanner/result/$state'
+      path: '/result/$state'
+      fullPath: '/scanner/result/$state'
+      preLoaderRoute: typeof ScannerResultStateRouteImport
+      parentRoute: typeof ScannerRoute
+    }
+    '/organizer/invite/single': {
+      id: '/organizer/invite/single'
+      path: '/invite/single'
+      fullPath: '/organizer/invite/single'
+      preLoaderRoute: typeof OrganizerInviteSingleRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/invite/manual': {
+      id: '/organizer/invite/manual'
+      path: '/invite/manual'
+      fullPath: '/organizer/invite/manual'
+      preLoaderRoute: typeof OrganizerInviteManualRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/invite/history': {
+      id: '/organizer/invite/history'
+      path: '/invite/history'
+      fullPath: '/organizer/invite/history'
+      preLoaderRoute: typeof OrganizerInviteHistoryRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/invite/group': {
+      id: '/organizer/invite/group'
+      path: '/invite/group'
+      fullPath: '/organizer/invite/group'
+      preLoaderRoute: typeof OrganizerInviteGroupRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/invite/contacts': {
+      id: '/organizer/invite/contacts'
+      path: '/invite/contacts'
+      fullPath: '/organizer/invite/contacts'
+      preLoaderRoute: typeof OrganizerInviteContactsRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/events/new': {
+      id: '/organizer/events/new'
+      path: '/events/new'
+      fullPath: '/organizer/events/new'
+      preLoaderRoute: typeof OrganizerEventsNewRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/events/$id': {
+      id: '/organizer/events/$id'
+      path: '/events/$id'
+      fullPath: '/organizer/events/$id'
+      preLoaderRoute: typeof OrganizerEventsIdRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/delegation/allocate': {
+      id: '/organizer/delegation/allocate'
+      path: '/delegation/allocate'
+      fullPath: '/organizer/delegation/allocate'
+      preLoaderRoute: typeof OrganizerDelegationAllocateRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/credits/ledger': {
+      id: '/organizer/credits/ledger'
+      path: '/credits/ledger'
+      fullPath: '/organizer/credits/ledger'
+      preLoaderRoute: typeof OrganizerCreditsLedgerRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/credits/buy': {
+      id: '/organizer/credits/buy'
+      path: '/credits/buy'
+      fullPath: '/organizer/credits/buy'
+      preLoaderRoute: typeof OrganizerCreditsBuyRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/invite/$id/wallet': {
+      id: '/invite/$id/wallet'
+      path: '/invite/$id/wallet'
+      fullPath: '/invite/$id/wallet'
+      preLoaderRoute: typeof InviteIdWalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite/$id/qr': {
+      id: '/invite/$id/qr'
+      path: '/invite/$id/qr'
+      fullPath: '/invite/$id/qr'
+      preLoaderRoute: typeof InviteIdQrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
+  AdminOrganizersRoute: typeof AdminOrganizersRoute
+  AdminPackagesRoute: typeof AdminPackagesRoute
+  AdminRevenueRoute: typeof AdminRevenueRoute
+  AdminSupportRoute: typeof AdminSupportRoute
+  AdminVenuesRoute: typeof AdminVenuesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuditRoute: AdminAuditRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
+  AdminOrganizersRoute: AdminOrganizersRoute,
+  AdminPackagesRoute: AdminPackagesRoute,
+  AdminRevenueRoute: AdminRevenueRoute,
+  AdminSupportRoute: AdminSupportRoute,
+  AdminVenuesRoute: AdminVenuesRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface OrganizerRouteChildren {
+  OrganizerDashboardRoute: typeof OrganizerDashboardRoute
+  OrganizerLoginRoute: typeof OrganizerLoginRoute
+  OrganizerNotificationsRoute: typeof OrganizerNotificationsRoute
+  OrganizerProfileSetupRoute: typeof OrganizerProfileSetupRoute
+  OrganizerRsvpRoute: typeof OrganizerRsvpRoute
+  OrganizerSettingsRoute: typeof OrganizerSettingsRoute
+  OrganizerSplashRoute: typeof OrganizerSplashRoute
+  OrganizerTransactionsRoute: typeof OrganizerTransactionsRoute
+  OrganizerVerifyRoute: typeof OrganizerVerifyRoute
+  OrganizerIndexRoute: typeof OrganizerIndexRoute
+  OrganizerCreditsBuyRoute: typeof OrganizerCreditsBuyRoute
+  OrganizerCreditsLedgerRoute: typeof OrganizerCreditsLedgerRoute
+  OrganizerDelegationAllocateRoute: typeof OrganizerDelegationAllocateRoute
+  OrganizerEventsIdRoute: typeof OrganizerEventsIdRoute
+  OrganizerEventsNewRoute: typeof OrganizerEventsNewRoute
+  OrganizerInviteContactsRoute: typeof OrganizerInviteContactsRoute
+  OrganizerInviteGroupRoute: typeof OrganizerInviteGroupRoute
+  OrganizerInviteHistoryRoute: typeof OrganizerInviteHistoryRoute
+  OrganizerInviteManualRoute: typeof OrganizerInviteManualRoute
+  OrganizerInviteSingleRoute: typeof OrganizerInviteSingleRoute
+  OrganizerDelegationIndexRoute: typeof OrganizerDelegationIndexRoute
+  OrganizerEventsIndexRoute: typeof OrganizerEventsIndexRoute
+  OrganizerInviteIndexRoute: typeof OrganizerInviteIndexRoute
+}
+
+const OrganizerRouteChildren: OrganizerRouteChildren = {
+  OrganizerDashboardRoute: OrganizerDashboardRoute,
+  OrganizerLoginRoute: OrganizerLoginRoute,
+  OrganizerNotificationsRoute: OrganizerNotificationsRoute,
+  OrganizerProfileSetupRoute: OrganizerProfileSetupRoute,
+  OrganizerRsvpRoute: OrganizerRsvpRoute,
+  OrganizerSettingsRoute: OrganizerSettingsRoute,
+  OrganizerSplashRoute: OrganizerSplashRoute,
+  OrganizerTransactionsRoute: OrganizerTransactionsRoute,
+  OrganizerVerifyRoute: OrganizerVerifyRoute,
+  OrganizerIndexRoute: OrganizerIndexRoute,
+  OrganizerCreditsBuyRoute: OrganizerCreditsBuyRoute,
+  OrganizerCreditsLedgerRoute: OrganizerCreditsLedgerRoute,
+  OrganizerDelegationAllocateRoute: OrganizerDelegationAllocateRoute,
+  OrganizerEventsIdRoute: OrganizerEventsIdRoute,
+  OrganizerEventsNewRoute: OrganizerEventsNewRoute,
+  OrganizerInviteContactsRoute: OrganizerInviteContactsRoute,
+  OrganizerInviteGroupRoute: OrganizerInviteGroupRoute,
+  OrganizerInviteHistoryRoute: OrganizerInviteHistoryRoute,
+  OrganizerInviteManualRoute: OrganizerInviteManualRoute,
+  OrganizerInviteSingleRoute: OrganizerInviteSingleRoute,
+  OrganizerDelegationIndexRoute: OrganizerDelegationIndexRoute,
+  OrganizerEventsIndexRoute: OrganizerEventsIndexRoute,
+  OrganizerInviteIndexRoute: OrganizerInviteIndexRoute,
+}
+
+const OrganizerRouteWithChildren = OrganizerRoute._addFileChildren(
+  OrganizerRouteChildren,
+)
+
+interface ScannerRouteChildren {
+  ScannerScanRoute: typeof ScannerScanRoute
+  ScannerIndexRoute: typeof ScannerIndexRoute
+  ScannerResultStateRoute: typeof ScannerResultStateRoute
+}
+
+const ScannerRouteChildren: ScannerRouteChildren = {
+  ScannerScanRoute: ScannerScanRoute,
+  ScannerIndexRoute: ScannerIndexRoute,
+  ScannerResultStateRoute: ScannerResultStateRoute,
+}
+
+const ScannerRouteWithChildren =
+  ScannerRoute._addFileChildren(ScannerRouteChildren)
+
+interface VenueRouteChildren {
+  VenueAnalyticsRoute: typeof VenueAnalyticsRoute
+  VenueRevenueRoute: typeof VenueRevenueRoute
+  VenueIndexRoute: typeof VenueIndexRoute
+  VenueCreditsBuyRoute: typeof VenueCreditsBuyRoute
+  VenueEventsIdRoute: typeof VenueEventsIdRoute
+  VenueEventsNewRoute: typeof VenueEventsNewRoute
+  VenueCreditsIndexRoute: typeof VenueCreditsIndexRoute
+  VenueEventsIndexRoute: typeof VenueEventsIndexRoute
+}
+
+const VenueRouteChildren: VenueRouteChildren = {
+  VenueAnalyticsRoute: VenueAnalyticsRoute,
+  VenueRevenueRoute: VenueRevenueRoute,
+  VenueIndexRoute: VenueIndexRoute,
+  VenueCreditsBuyRoute: VenueCreditsBuyRoute,
+  VenueEventsIdRoute: VenueEventsIdRoute,
+  VenueEventsNewRoute: VenueEventsNewRoute,
+  VenueCreditsIndexRoute: VenueCreditsIndexRoute,
+  VenueEventsIndexRoute: VenueEventsIndexRoute,
+}
+
+const VenueRouteWithChildren = VenueRoute._addFileChildren(VenueRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  OrganizerRoute: OrganizerRouteWithChildren,
+  ScannerRoute: ScannerRouteWithChildren,
+  VenueRoute: VenueRouteWithChildren,
+  InviteIdQrRoute: InviteIdQrRoute,
+  InviteIdWalletRoute: InviteIdWalletRoute,
+  InviteIdIndexRoute: InviteIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
