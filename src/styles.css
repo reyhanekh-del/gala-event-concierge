@@ -14,7 +14,7 @@
 
 @theme inline {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Instrument Serif", "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-serif: "Minion Pro", "Instrument Serif", "Cormorant Garamond", ui-serif, Georgia, serif;
   --font-arabic: "Noto Kufi Arabic", "Tajawal", ui-sans-serif, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
