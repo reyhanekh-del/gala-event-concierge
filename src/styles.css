@@ -225,93 +225,9 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-serif);
-    font-size: 1rem;
-    line-height: 1.6;
-    font-weight: 400;
-    font-feature-settings: "liga", "dlig", "kern";
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: 1.1;
-    color: var(--color-foreground);
-  }
-  h1 { font-size: clamp(2.5rem, 4.5vw, 4rem); font-weight: 500; letter-spacing: -0.025em; }
-  h2 { font-size: clamp(1.875rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.02em; }
-  h3 { font-size: 1.5rem; line-height: 1.2; }
-  h4 { font-size: 1.25rem; line-height: 1.25; }
-  h5 { font-size: 1.0625rem; line-height: 1.3; }
-  h6 { font-size: 0.9375rem; line-height: 1.35; }
-
-  small { font-size: 0.8125rem; line-height: 1.45; }
-
-  .font-serif { font-family: var(--font-serif); font-feature-settings: "liga", "dlig", "kern"; }
-  .font-sans  { font-family: var(--font-sans); }
-
-  html[dir="rtl"] body,
-  html[dir="rtl"] h1,
-  html[dir="rtl"] h2,
-  html[dir="rtl"] h3,
-  html[dir="rtl"] h4,
-  html[dir="rtl"] h5,
-  html[dir="rtl"] h6 {
-    font-family: var(--font-arabic);
-    letter-spacing: 0;
-  }
-}
-
-/* Semantic typography utilities — consistent scale across all 5 apps */
-@utility text-display {
-  font-family: var(--font-serif);
-  font-size: clamp(3rem, 6vw, 5.5rem);
-  line-height: 1;
-  letter-spacing: -0.03em;
-  font-weight: 500;
-}
-@utility text-eyebrow {
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  line-height: 1;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: var(--color-muted-foreground);
-}
-@utility text-label {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  line-height: 1.4;
-  letter-spacing: 0.04em;
-  font-weight: 500;
-}
-@utility text-caption {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  line-height: 1.45;
-  color: var(--color-muted-foreground);
-}
-@utility text-meta {
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  color: var(--color-muted-foreground);
-}
-@utility text-lede {
-  font-family: var(--font-serif);
-  font-size: 1.125rem;
-  line-height: 1.55;
-  font-weight: 400;
-  font-style: italic;
-  color: var(--color-muted-foreground);
-}
-
-/* UI chrome (buttons, inputs, sidebars, badges, tabs) keeps the sans face for legibility */
-button, input, select, textarea, [role="tab"], [role="menuitem"], [role="button"],
-.font-ui {
-  font-family: var(--font-sans);
+  .font-serif { font-family: var(--font-serif); font-feature-settings: "liga", "dlig"; }
 }
 
 /* Subtle dotted noise for premium feel */
