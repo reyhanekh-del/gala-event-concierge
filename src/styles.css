@@ -2,6 +2,14 @@
 @source "../src";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: "Minion Pro";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/af97ebf7-619d-4ac6-a610-fc35a7b03d4f/MinionPro-It.otf") format("opentype");
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
