@@ -4,10 +4,73 @@
 
 @font-face {
   font-family: "Minion Pro";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/0aec3123-6cfa-4a82-b183-08b639bb0d32/MinionPro-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro";
   font-style: italic;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
   src: url("/__l5e/assets-v1/af97ebf7-619d-4ac6-a610-fc35a7b03d4f/MinionPro-It.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/42946d8f-e938-4de8-be1f-0145e6d8d22b/MinionPro-Medium.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/d07b9ef0-6ed1-477e-87ab-5d3338386caa/MinionPro-MediumIt.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/4753f585-57ba-42ba-a61c-f973b4cfe0d3/MinionPro-Semibold.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/291981db-9989-4374-b564-50bc3b692073/MinionPro-SemiboldIt.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/a51e702d-cba6-4c52-b322-5af66e1f9e5b/MinionPro-Bold.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/86efe504-3ba5-4c9b-8482-132ba6417733/MinionPro-BoldIt.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro Condensed";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/c0a0882d-dbf7-4e93-a85d-619e0c13a62b/MinionPro-BoldCn.otf") format("opentype");
+}
+@font-face {
+  font-family: "Minion Pro Condensed";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/__l5e/assets-v1/50e7a81c-af43-4cce-9251-f01964c64804/MinionPro-BoldCnIt.otf") format("opentype");
 }
 
 @custom-variant dark (&:is(.dark *));
