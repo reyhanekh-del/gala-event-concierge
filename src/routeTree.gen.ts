@@ -59,6 +59,7 @@ import { Route as OrganizerCreditsLedgerRouteImport } from './routes/organizer.c
 import { Route as OrganizerCreditsBuyRouteImport } from './routes/organizer.credits.buy'
 import { Route as InviteIdWalletRouteImport } from './routes/invite.$id.wallet'
 import { Route as InviteIdQrRouteImport } from './routes/invite.$id.qr'
+import { Route as AdminVenuesIdRouteImport } from './routes/admin.venues.$id'
 
 const VenueRoute = VenueRouteImport.update({
   id: '/venue',
@@ -312,6 +313,11 @@ const InviteIdQrRoute = InviteIdQrRouteImport.update({
   path: '/invite/$id/qr',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminVenuesIdRoute = AdminVenuesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminVenuesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -325,7 +331,7 @@ export interface FileRoutesByFullPath {
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
-  '/admin/venues': typeof AdminVenuesRoute
+  '/admin/venues': typeof AdminVenuesRouteWithChildren
   '/organizer/dashboard': typeof OrganizerDashboardRoute
   '/organizer/login': typeof OrganizerLoginRoute
   '/organizer/notifications': typeof OrganizerNotificationsRoute
@@ -342,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/organizer/': typeof OrganizerIndexRoute
   '/scanner/': typeof ScannerIndexRoute
   '/venue/': typeof VenueIndexRoute
+  '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
   '/organizer/credits/buy': typeof OrganizerCreditsBuyRoute
@@ -373,7 +380,7 @@ export interface FileRoutesByTo {
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
-  '/admin/venues': typeof AdminVenuesRoute
+  '/admin/venues': typeof AdminVenuesRouteWithChildren
   '/organizer/dashboard': typeof OrganizerDashboardRoute
   '/organizer/login': typeof OrganizerLoginRoute
   '/organizer/notifications': typeof OrganizerNotificationsRoute
@@ -390,6 +397,7 @@ export interface FileRoutesByTo {
   '/organizer': typeof OrganizerIndexRoute
   '/scanner': typeof ScannerIndexRoute
   '/venue': typeof VenueIndexRoute
+  '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
   '/organizer/credits/buy': typeof OrganizerCreditsBuyRoute
@@ -426,7 +434,7 @@ export interface FileRoutesById {
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
-  '/admin/venues': typeof AdminVenuesRoute
+  '/admin/venues': typeof AdminVenuesRouteWithChildren
   '/organizer/dashboard': typeof OrganizerDashboardRoute
   '/organizer/login': typeof OrganizerLoginRoute
   '/organizer/notifications': typeof OrganizerNotificationsRoute
@@ -443,6 +451,7 @@ export interface FileRoutesById {
   '/organizer/': typeof OrganizerIndexRoute
   '/scanner/': typeof ScannerIndexRoute
   '/venue/': typeof VenueIndexRoute
+  '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
   '/organizer/credits/buy': typeof OrganizerCreditsBuyRoute
@@ -497,6 +506,7 @@ export interface FileRouteTypes {
     | '/organizer/'
     | '/scanner/'
     | '/venue/'
+    | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
     | '/organizer/credits/buy'
@@ -545,6 +555,7 @@ export interface FileRouteTypes {
     | '/organizer'
     | '/scanner'
     | '/venue'
+    | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
     | '/organizer/credits/buy'
@@ -597,6 +608,7 @@ export interface FileRouteTypes {
     | '/organizer/'
     | '/scanner/'
     | '/venue/'
+    | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
     | '/organizer/credits/buy'
@@ -984,8 +996,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InviteIdQrRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/venues/$id': {
+      id: '/admin/venues/$id'
+      path: '/$id'
+      fullPath: '/admin/venues/$id'
+      preLoaderRoute: typeof AdminVenuesIdRouteImport
+      parentRoute: typeof AdminVenuesRoute
+    }
   }
 }
+
+interface AdminVenuesRouteChildren {
+  AdminVenuesIdRoute: typeof AdminVenuesIdRoute
+}
+
+const AdminVenuesRouteChildren: AdminVenuesRouteChildren = {
+  AdminVenuesIdRoute: AdminVenuesIdRoute,
+}
+
+const AdminVenuesRouteWithChildren = AdminVenuesRoute._addFileChildren(
+  AdminVenuesRouteChildren,
+)
 
 interface AdminRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
@@ -994,7 +1025,7 @@ interface AdminRouteChildren {
   AdminPackagesRoute: typeof AdminPackagesRoute
   AdminRevenueRoute: typeof AdminRevenueRoute
   AdminSupportRoute: typeof AdminSupportRoute
-  AdminVenuesRoute: typeof AdminVenuesRoute
+  AdminVenuesRoute: typeof AdminVenuesRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -1005,7 +1036,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPackagesRoute: AdminPackagesRoute,
   AdminRevenueRoute: AdminRevenueRoute,
   AdminSupportRoute: AdminSupportRoute,
-  AdminVenuesRoute: AdminVenuesRoute,
+  AdminVenuesRoute: AdminVenuesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }
 
