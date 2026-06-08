@@ -114,6 +114,6 @@ function VenuesPage() {
   );
 }
 
-export const Route = createFileRoute("/admin/venues")({
+export const Route = createFileRoute("/admin/venues/")({
   component: VenuesPage,
 });
