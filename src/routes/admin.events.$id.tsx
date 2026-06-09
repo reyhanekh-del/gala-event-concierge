@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useParams, useRouter } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  ArrowLeft, Pencil, Check, Mail, Users, Info, X, RefreshCw, Search,
+  ArrowLeft, Pencil, Check, Users, Info, X, RefreshCw, Search,
 } from "lucide-react";
 import { SectionHeader, StatCard } from "@/components/gala/Primitives";
 import { Button } from "@/components/ui/button";
