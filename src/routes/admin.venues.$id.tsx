@@ -163,7 +163,7 @@ function VenueDetailPage() {
                     {new Date(e.date).toLocaleDateString()} · {e.host}
                   </p>
                 </div>
-                <div className="flex items-center gap-6 text-sm">
+                <div className="flex items-center gap-4 text-sm">
                   <div className="text-end">
                     <p className="text-xs text-muted-foreground">Credits</p>
                     <p className="font-medium">{e.creditsConsumed} / {e.creditsTotal}</p>
@@ -171,6 +171,9 @@ function VenueDetailPage() {
                   <Badge variant={e.status === "upcoming" ? "default" : "secondary"} className="capitalize">
                     {e.status}
                   </Badge>
+                  <Button asChild size="sm" variant="outline">
+                    <Link to="/admin/events/$id" params={{ id: e.id }}>View</Link>
+                  </Button>
                 </div>
               </div>
             ))}

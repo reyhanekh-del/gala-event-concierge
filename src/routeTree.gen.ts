@@ -61,6 +61,7 @@ import { Route as OrganizerCreditsBuyRouteImport } from './routes/organizer.cred
 import { Route as InviteIdWalletRouteImport } from './routes/invite.$id.wallet'
 import { Route as InviteIdQrRouteImport } from './routes/invite.$id.qr'
 import { Route as AdminVenuesIdRouteImport } from './routes/admin.venues.$id'
+import { Route as AdminEventsIdRouteImport } from './routes/admin.events.$id'
 
 const VenueRoute = VenueRouteImport.update({
   id: '/venue',
@@ -324,6 +325,11 @@ const AdminVenuesIdRoute = AdminVenuesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminVenuesRoute,
 } as any)
+const AdminEventsIdRoute = AdminEventsIdRouteImport.update({
+  id: '/events/$id',
+  path: '/events/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -354,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/organizer/': typeof OrganizerIndexRoute
   '/scanner/': typeof ScannerIndexRoute
   '/venue/': typeof VenueIndexRoute
+  '/admin/events/$id': typeof AdminEventsIdRoute
   '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
@@ -403,6 +410,7 @@ export interface FileRoutesByTo {
   '/organizer': typeof OrganizerIndexRoute
   '/scanner': typeof ScannerIndexRoute
   '/venue': typeof VenueIndexRoute
+  '/admin/events/$id': typeof AdminEventsIdRoute
   '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
@@ -458,6 +466,7 @@ export interface FileRoutesById {
   '/organizer/': typeof OrganizerIndexRoute
   '/scanner/': typeof ScannerIndexRoute
   '/venue/': typeof VenueIndexRoute
+  '/admin/events/$id': typeof AdminEventsIdRoute
   '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
@@ -514,6 +523,7 @@ export interface FileRouteTypes {
     | '/organizer/'
     | '/scanner/'
     | '/venue/'
+    | '/admin/events/$id'
     | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
@@ -563,6 +573,7 @@ export interface FileRouteTypes {
     | '/organizer'
     | '/scanner'
     | '/venue'
+    | '/admin/events/$id'
     | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
@@ -617,6 +628,7 @@ export interface FileRouteTypes {
     | '/organizer/'
     | '/scanner/'
     | '/venue/'
+    | '/admin/events/$id'
     | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
@@ -1020,6 +1032,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminVenuesIdRouteImport
       parentRoute: typeof AdminVenuesRoute
     }
+    '/admin/events/$id': {
+      id: '/admin/events/$id'
+      path: '/events/$id'
+      fullPath: '/admin/events/$id'
+      preLoaderRoute: typeof AdminEventsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
@@ -1046,6 +1065,7 @@ interface AdminRouteChildren {
   AdminSupportRoute: typeof AdminSupportRoute
   AdminVenuesRoute: typeof AdminVenuesRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminEventsIdRoute: typeof AdminEventsIdRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -1057,6 +1077,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminSupportRoute: AdminSupportRoute,
   AdminVenuesRoute: AdminVenuesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
+  AdminEventsIdRoute: AdminEventsIdRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -1169,13 +1190,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
