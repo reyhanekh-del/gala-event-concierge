@@ -285,7 +285,7 @@ function EditEventDialog({
   open: boolean;
   onOpenChange: (o: boolean) => void;
   event: EventT;
-  onSave: (patch: Partial<EventT>) => void;
+  onSave: (patch: Partial<EventT>, changed: string[]) => void;
 }) {
   const [name, setName] = useState(event.name);
   const [host, setHost] = useState(event.host);
@@ -296,14 +296,22 @@ function EditEventDialog({
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
+    const next = {
       name: name.trim() || event.name,
       host: host.trim() || event.host,
       city: city.trim() || event.city,
       address: address.trim() || event.address,
       date: new Date(date).toISOString(),
       creditsTotal: Number(credits) || 0,
-    });
+    };
+    const changed: string[] = [];
+    if (next.name !== event.name) changed.push("name");
+    if (next.host !== event.host) changed.push("host");
+    if (next.city !== event.city) changed.push("city");
+    if (next.address !== event.address) changed.push("address");
+    if (next.date !== event.date) changed.push("date");
+    if (next.creditsTotal !== event.creditsTotal) changed.push("credits");
+    onSave(next, changed);
     toast.success("Event updated");
     onOpenChange(false);
   };
