@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useParams, useRouter } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
-  ArrowLeft, Pencil, Check, Users, Info, X, RefreshCw, Search,
+  ArrowLeft, Pencil, Check, Users, Info, X, RefreshCw, Search, History,
+  Send, Ban, Pencil as PencilIcon,
 } from "lucide-react";
 import { SectionHeader, StatCard } from "@/components/gala/Primitives";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,23 @@ const STATUS_VARIANT: Record<RsvpStatus, "default" | "secondary" | "destructive"
   cancelled: "outline",
 };
 
+type AuditAction = "sent" | "resent" | "cancelled" | "edited";
+type AuditEntry = {
+  id: string;
+  date: string;
+  action: AuditAction;
+  target: string;
+  detail?: string;
+  actor: string;
+};
+
+const ACTION_META: Record<AuditAction, { label: string; icon: typeof Send; tone: string }> = {
+  sent:      { label: "Invite sent",      icon: Send,       tone: "text-sky-600 bg-sky-50 dark:bg-sky-950" },
+  resent:    { label: "Invite resent",    icon: RefreshCw,  tone: "text-amber-600 bg-amber-50 dark:bg-amber-950" },
+  cancelled: { label: "Invite cancelled", icon: Ban,        tone: "text-rose-600 bg-rose-50 dark:bg-rose-950" },
+  edited:    { label: "Event edited",     icon: PencilIcon, tone: "text-violet-600 bg-violet-50 dark:bg-violet-950" },
+};
+
 function AdminEventDetail() {
   const { id } = useParams({ from: "/admin/events/$id" });
   const router = useRouter();
@@ -33,6 +51,32 @@ function AdminEventDetail() {
   const [guests, setGuests] = useState<Guest[]>(() => (base ? guestsByEvent(base.id) : []));
   const [editOpen, setEditOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [audit, setAudit] = useState<AuditEntry[]>(() =>
+    base
+      ? guestsByEvent(base.id).map((g, i) => ({
+          id: `a_seed_${g.id}`,
+          date: g.invitedAt,
+          action: "sent" as AuditAction,
+          target: g.name,
+          detail: g.phone,
+          actor: i % 4 === 0 ? "system@gala.app" : "admin@gala.app",
+        }))
+      : [],
+  );
+
+  const logAudit = (e: Omit<AuditEntry, "id" | "date" | "actor"> & { actor?: string }) => {
+    setAudit((arr) => [
+      {
+        id: `a_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        date: new Date().toISOString(),
+        actor: e.actor ?? "admin@gala.app",
+        action: e.action,
+        target: e.target,
+        detail: e.detail,
+      },
+      ...arr,
+    ]);
+  };
 
   if (!event) {
     return (
@@ -58,12 +102,14 @@ function AdminEventDetail() {
     g.phone.includes(query),
   );
 
-  const cancelInvite = (gid: string) => {
-    setGuests((arr) => arr.map((g) => g.id === gid ? { ...g, status: "cancelled" } : g));
+  const cancelInvite = (g: Guest) => {
+    setGuests((arr) => arr.map((x) => x.id === g.id ? { ...x, status: "cancelled" } : x));
+    logAudit({ action: "cancelled", target: g.name, detail: g.phone });
     toast.success("Invite cancelled");
   };
-  const resendInvite = (gid: string) => {
-    setGuests((arr) => arr.map((g) => g.id === gid ? { ...g, status: "pending", invitedAt: new Date().toISOString() } : g));
+  const resendInvite = (g: Guest) => {
+    setGuests((arr) => arr.map((x) => x.id === g.id ? { ...x, status: "pending", invitedAt: new Date().toISOString() } : x));
+    logAudit({ action: "resent", target: g.name, detail: g.phone });
     toast.success("Invite resent");
   };
 
@@ -97,6 +143,7 @@ function AdminEventDetail() {
         <TabsList>
           <TabsTrigger value="info"><Info className="h-4 w-4 mr-2" /> Details</TabsTrigger>
           <TabsTrigger value="invitees"><Users className="h-4 w-4 mr-2" /> Invitees</TabsTrigger>
+          <TabsTrigger value="timeline"><History className="h-4 w-4 mr-2" /> Timeline</TabsTrigger>
         </TabsList>
 
         <TabsContent value="info" className="mt-6">
@@ -147,7 +194,7 @@ function AdminEventDetail() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => resendInvite(g.id)}
+                    onClick={() => resendInvite(g)}
                     disabled={g.status === "checkedin"}
                   >
                     <RefreshCw className="h-3.5 w-3.5" /> Resend
@@ -156,7 +203,7 @@ function AdminEventDetail() {
                     size="sm"
                     variant="ghost"
                     className="text-rose-600 hover:text-rose-700"
-                    onClick={() => cancelInvite(g.id)}
+                    onClick={() => cancelInvite(g)}
                     disabled={g.status === "cancelled" || g.status === "checkedin"}
                   >
                     <X className="h-3.5 w-3.5" /> Cancel
@@ -166,13 +213,58 @@ function AdminEventDetail() {
             ))}
           </div>
         </TabsContent>
+
+        <TabsContent value="timeline" className="mt-6">
+          <div className="rounded-2xl border bg-card p-6">
+            {audit.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">No activity yet.</p>
+            ) : (
+              <ol className="relative border-s ms-3 space-y-6">
+                {audit.map((a) => {
+                  const meta = ACTION_META[a.action];
+                  const Icon = meta.icon;
+                  return (
+                    <li key={a.id} className="ms-6">
+                      <span className={`absolute -start-3.5 flex h-7 w-7 items-center justify-center rounded-full ring-4 ring-background ${meta.tone}`}>
+                        <Icon className="h-3.5 w-3.5" />
+                      </span>
+                      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                        <p className="text-sm">
+                          <span className="font-medium">{meta.label}</span>
+                          {" · "}
+                          <span className="text-muted-foreground">{a.target}</span>
+                        </p>
+                        <time className="text-xs text-muted-foreground tabular-nums">
+                          {format(new Date(a.date), "MMM d, yyyy · h:mm a")}
+                        </time>
+                      </div>
+                      {a.detail && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{a.detail}</p>
+                      )}
+                      <p className="text-[11px] uppercase tracking-widest text-muted-foreground mt-1">
+                        by {a.actor}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </div>
+        </TabsContent>
       </Tabs>
 
       <EditEventDialog
         open={editOpen}
         onOpenChange={setEditOpen}
         event={event}
-        onSave={(patch) => setEvent((e) => e ? { ...e, ...patch } : e)}
+        onSave={(patch, changed) => {
+          setEvent((e) => e ? { ...e, ...patch } : e);
+          logAudit({
+            action: "edited",
+            target: event.name,
+            detail: changed.length ? `Updated ${changed.join(", ")}` : "No changes",
+          });
+        }}
       />
     </div>
   );
@@ -193,7 +285,7 @@ function EditEventDialog({
   open: boolean;
   onOpenChange: (o: boolean) => void;
   event: EventT;
-  onSave: (patch: Partial<EventT>) => void;
+  onSave: (patch: Partial<EventT>, changed: string[]) => void;
 }) {
   const [name, setName] = useState(event.name);
   const [host, setHost] = useState(event.host);
@@ -204,14 +296,22 @@ function EditEventDialog({
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({
+    const next = {
       name: name.trim() || event.name,
       host: host.trim() || event.host,
       city: city.trim() || event.city,
       address: address.trim() || event.address,
       date: new Date(date).toISOString(),
       creditsTotal: Number(credits) || 0,
-    });
+    };
+    const changed: string[] = [];
+    if (next.name !== event.name) changed.push("name");
+    if (next.host !== event.host) changed.push("host");
+    if (next.city !== event.city) changed.push("city");
+    if (next.address !== event.address) changed.push("address");
+    if (next.date !== event.date) changed.push("date");
+    if (next.creditsTotal !== event.creditsTotal) changed.push("credits");
+    onSave(next, changed);
     toast.success("Event updated");
     onOpenChange(false);
   };
