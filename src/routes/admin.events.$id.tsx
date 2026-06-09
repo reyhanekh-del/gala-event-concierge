@@ -193,7 +193,7 @@ function AdminEventDetail() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => resendInvite(g.id)}
+                    onClick={() => resendInvite(g)}
                     disabled={g.status === "checkedin"}
                   >
                     <RefreshCw className="h-3.5 w-3.5" /> Resend
@@ -202,7 +202,7 @@ function AdminEventDetail() {
                     size="sm"
                     variant="ghost"
                     className="text-rose-600 hover:text-rose-700"
-                    onClick={() => cancelInvite(g.id)}
+                    onClick={() => cancelInvite(g)}
                     disabled={g.status === "cancelled" || g.status === "checkedin"}
                   >
                     <X className="h-3.5 w-3.5" /> Cancel
