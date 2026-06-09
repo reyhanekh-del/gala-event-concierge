@@ -143,6 +143,7 @@ function AdminEventDetail() {
         <TabsList>
           <TabsTrigger value="info"><Info className="h-4 w-4 mr-2" /> Details</TabsTrigger>
           <TabsTrigger value="invitees"><Users className="h-4 w-4 mr-2" /> Invitees</TabsTrigger>
+          <TabsTrigger value="timeline"><History className="h-4 w-4 mr-2" /> Timeline</TabsTrigger>
         </TabsList>
 
         <TabsContent value="info" className="mt-6">
