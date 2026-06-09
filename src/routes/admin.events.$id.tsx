@@ -213,13 +213,58 @@ function AdminEventDetail() {
             ))}
           </div>
         </TabsContent>
+
+        <TabsContent value="timeline" className="mt-6">
+          <div className="rounded-2xl border bg-card p-6">
+            {audit.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">No activity yet.</p>
+            ) : (
+              <ol className="relative border-s ms-3 space-y-6">
+                {audit.map((a) => {
+                  const meta = ACTION_META[a.action];
+                  const Icon = meta.icon;
+                  return (
+                    <li key={a.id} className="ms-6">
+                      <span className={`absolute -start-3.5 flex h-7 w-7 items-center justify-center rounded-full ring-4 ring-background ${meta.tone}`}>
+                        <Icon className="h-3.5 w-3.5" />
+                      </span>
+                      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                        <p className="text-sm">
+                          <span className="font-medium">{meta.label}</span>
+                          {" · "}
+                          <span className="text-muted-foreground">{a.target}</span>
+                        </p>
+                        <time className="text-xs text-muted-foreground tabular-nums">
+                          {format(new Date(a.date), "MMM d, yyyy · h:mm a")}
+                        </time>
+                      </div>
+                      {a.detail && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{a.detail}</p>
+                      )}
+                      <p className="text-[11px] uppercase tracking-widest text-muted-foreground mt-1">
+                        by {a.actor}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </div>
+        </TabsContent>
       </Tabs>
 
       <EditEventDialog
         open={editOpen}
         onOpenChange={setEditOpen}
         event={event}
-        onSave={(patch) => setEvent((e) => e ? { ...e, ...patch } : e)}
+        onSave={(patch, changed) => {
+          setEvent((e) => e ? { ...e, ...patch } : e);
+          logAudit({
+            action: "edited",
+            target: event.name,
+            detail: changed.length ? `Updated ${changed.join(", ")}` : "No changes",
+          });
+        }}
       />
     </div>
   );
