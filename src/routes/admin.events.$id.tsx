@@ -102,12 +102,14 @@ function AdminEventDetail() {
     g.phone.includes(query),
   );
 
-  const cancelInvite = (gid: string) => {
-    setGuests((arr) => arr.map((g) => g.id === gid ? { ...g, status: "cancelled" } : g));
+  const cancelInvite = (g: Guest) => {
+    setGuests((arr) => arr.map((x) => x.id === g.id ? { ...x, status: "cancelled" } : x));
+    logAudit({ action: "cancelled", target: g.name, detail: g.phone });
     toast.success("Invite cancelled");
   };
-  const resendInvite = (gid: string) => {
-    setGuests((arr) => arr.map((g) => g.id === gid ? { ...g, status: "pending", invitedAt: new Date().toISOString() } : g));
+  const resendInvite = (g: Guest) => {
+    setGuests((arr) => arr.map((x) => x.id === g.id ? { ...x, status: "pending", invitedAt: new Date().toISOString() } : x));
+    logAudit({ action: "resent", target: g.name, detail: g.phone });
     toast.success("Invite resent");
   };
 
