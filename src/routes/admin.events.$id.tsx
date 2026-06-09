@@ -26,6 +26,23 @@ const STATUS_VARIANT: Record<RsvpStatus, "default" | "secondary" | "destructive"
   cancelled: "outline",
 };
 
+type AuditAction = "sent" | "resent" | "cancelled" | "edited";
+type AuditEntry = {
+  id: string;
+  date: string;
+  action: AuditAction;
+  target: string;
+  detail?: string;
+  actor: string;
+};
+
+const ACTION_META: Record<AuditAction, { label: string; icon: typeof Send; tone: string }> = {
+  sent:      { label: "Invite sent",      icon: Send,       tone: "text-sky-600 bg-sky-50 dark:bg-sky-950" },
+  resent:    { label: "Invite resent",    icon: RefreshCw,  tone: "text-amber-600 bg-amber-50 dark:bg-amber-950" },
+  cancelled: { label: "Invite cancelled", icon: Ban,        tone: "text-rose-600 bg-rose-50 dark:bg-rose-950" },
+  edited:    { label: "Event edited",     icon: PencilIcon, tone: "text-violet-600 bg-violet-50 dark:bg-violet-950" },
+};
+
 function AdminEventDetail() {
   const { id } = useParams({ from: "/admin/events/$id" });
   const router = useRouter();
@@ -34,6 +51,32 @@ function AdminEventDetail() {
   const [guests, setGuests] = useState<Guest[]>(() => (base ? guestsByEvent(base.id) : []));
   const [editOpen, setEditOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [audit, setAudit] = useState<AuditEntry[]>(() =>
+    base
+      ? guestsByEvent(base.id).map((g, i) => ({
+          id: `a_seed_${g.id}`,
+          date: g.invitedAt,
+          action: "sent" as AuditAction,
+          target: g.name,
+          detail: g.phone,
+          actor: i % 4 === 0 ? "system@gala.app" : "admin@gala.app",
+        }))
+      : [],
+  );
+
+  const logAudit = (e: Omit<AuditEntry, "id" | "date" | "actor"> & { actor?: string }) => {
+    setAudit((arr) => [
+      {
+        id: `a_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        date: new Date().toISOString(),
+        actor: e.actor ?? "admin@gala.app",
+        action: e.action,
+        target: e.target,
+        detail: e.detail,
+      },
+      ...arr,
+    ]);
+  };
 
   if (!event) {
     return (
