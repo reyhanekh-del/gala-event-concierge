@@ -31,6 +31,7 @@ import { Route as OrganizerNotificationsRouteImport } from './routes/organizer.n
 import { Route as OrganizerLoginRouteImport } from './routes/organizer.login'
 import { Route as OrganizerDashboardRouteImport } from './routes/organizer.dashboard'
 import { Route as AdminVenuesRouteImport } from './routes/admin.venues'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminSupportRouteImport } from './routes/admin.support'
 import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
 import { Route as AdminPackagesRouteImport } from './routes/admin.packages'
@@ -173,6 +174,11 @@ const OrganizerDashboardRoute = OrganizerDashboardRouteImport.update({
 const AdminVenuesRoute = AdminVenuesRouteImport.update({
   id: '/venues',
   path: '/venues',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSupportRoute = AdminSupportRouteImport.update({
@@ -355,6 +361,7 @@ export interface FileRoutesByFullPath {
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/venues': typeof AdminVenuesRouteWithChildren
   '/organizer/dashboard': typeof OrganizerDashboardRoute
   '/organizer/login': typeof OrganizerLoginRoute
@@ -407,6 +414,7 @@ export interface FileRoutesByTo {
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRoute
   '/organizer/dashboard': typeof OrganizerDashboardRoute
   '/organizer/login': typeof OrganizerLoginRoute
   '/organizer/notifications': typeof OrganizerNotificationsRoute
@@ -464,6 +472,7 @@ export interface FileRoutesById {
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRoute
   '/admin/venues': typeof AdminVenuesRouteWithChildren
   '/organizer/dashboard': typeof OrganizerDashboardRoute
   '/organizer/login': typeof OrganizerLoginRoute
@@ -523,6 +532,7 @@ export interface FileRouteTypes {
     | '/admin/packages'
     | '/admin/revenue'
     | '/admin/support'
+    | '/admin/users'
     | '/admin/venues'
     | '/organizer/dashboard'
     | '/organizer/login'
@@ -575,6 +585,7 @@ export interface FileRouteTypes {
     | '/admin/packages'
     | '/admin/revenue'
     | '/admin/support'
+    | '/admin/users'
     | '/organizer/dashboard'
     | '/organizer/login'
     | '/organizer/notifications'
@@ -631,6 +642,7 @@ export interface FileRouteTypes {
     | '/admin/packages'
     | '/admin/revenue'
     | '/admin/support'
+    | '/admin/users'
     | '/admin/venues'
     | '/organizer/dashboard'
     | '/organizer/login'
@@ -842,6 +854,13 @@ declare module '@tanstack/react-router' {
       path: '/venues'
       fullPath: '/admin/venues'
       preLoaderRoute: typeof AdminVenuesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/support': {
@@ -1113,6 +1132,7 @@ interface AdminRouteChildren {
   AdminPackagesRoute: typeof AdminPackagesRoute
   AdminRevenueRoute: typeof AdminRevenueRoute
   AdminSupportRoute: typeof AdminSupportRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   AdminVenuesRoute: typeof AdminVenuesRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
   AdminEventsIdRoute: typeof AdminEventsIdRoute
@@ -1125,6 +1145,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPackagesRoute: AdminPackagesRoute,
   AdminRevenueRoute: AdminRevenueRoute,
   AdminSupportRoute: AdminSupportRoute,
+  AdminUsersRoute: AdminUsersRoute,
   AdminVenuesRoute: AdminVenuesRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
   AdminEventsIdRoute: AdminEventsIdRoute,
