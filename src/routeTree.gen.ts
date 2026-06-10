@@ -44,6 +44,7 @@ import { Route as OrganizerEventsIndexRouteImport } from './routes/organizer.eve
 import { Route as OrganizerDelegationIndexRouteImport } from './routes/organizer.delegation.index'
 import { Route as InviteIdIndexRouteImport } from './routes/invite.$id.index'
 import { Route as AdminVenuesIndexRouteImport } from './routes/admin.venues.index'
+import { Route as AdminOrganizersIndexRouteImport } from './routes/admin.organizers.index'
 import { Route as VenueEventsNewRouteImport } from './routes/venue.events.new'
 import { Route as VenueEventsIdRouteImport } from './routes/venue.events.$id'
 import { Route as VenueCreditsBuyRouteImport } from './routes/venue.credits.buy'
@@ -61,6 +62,7 @@ import { Route as OrganizerCreditsBuyRouteImport } from './routes/organizer.cred
 import { Route as InviteIdWalletRouteImport } from './routes/invite.$id.wallet'
 import { Route as InviteIdQrRouteImport } from './routes/invite.$id.qr'
 import { Route as AdminVenuesIdRouteImport } from './routes/admin.venues.$id'
+import { Route as AdminOrganizersIdRouteImport } from './routes/admin.organizers.$id'
 import { Route as AdminEventsIdRouteImport } from './routes/admin.events.$id'
 
 const VenueRoute = VenueRouteImport.update({
@@ -239,6 +241,11 @@ const AdminVenuesIndexRoute = AdminVenuesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminVenuesRoute,
 } as any)
+const AdminOrganizersIndexRoute = AdminOrganizersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminOrganizersRoute,
+} as any)
 const VenueEventsNewRoute = VenueEventsNewRouteImport.update({
   id: '/events/new',
   path: '/events/new',
@@ -325,6 +332,11 @@ const AdminVenuesIdRoute = AdminVenuesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminVenuesRoute,
 } as any)
+const AdminOrganizersIdRoute = AdminOrganizersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminOrganizersRoute,
+} as any)
 const AdminEventsIdRoute = AdminEventsIdRouteImport.update({
   id: '/events/$id',
   path: '/events/$id',
@@ -339,7 +351,7 @@ export interface FileRoutesByFullPath {
   '/venue': typeof VenueRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
   '/admin/notifications': typeof AdminNotificationsRoute
-  '/admin/organizers': typeof AdminOrganizersRoute
+  '/admin/organizers': typeof AdminOrganizersRouteWithChildren
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
@@ -361,6 +373,7 @@ export interface FileRoutesByFullPath {
   '/scanner/': typeof ScannerIndexRoute
   '/venue/': typeof VenueIndexRoute
   '/admin/events/$id': typeof AdminEventsIdRoute
+  '/admin/organizers/$id': typeof AdminOrganizersIdRoute
   '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
@@ -378,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
   '/venue/events/new': typeof VenueEventsNewRoute
+  '/admin/organizers/': typeof AdminOrganizersIndexRoute
   '/admin/venues/': typeof AdminVenuesIndexRoute
   '/invite/$id/': typeof InviteIdIndexRoute
   '/organizer/delegation/': typeof OrganizerDelegationIndexRoute
@@ -390,7 +404,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/notifications': typeof AdminNotificationsRoute
-  '/admin/organizers': typeof AdminOrganizersRoute
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
@@ -411,6 +424,7 @@ export interface FileRoutesByTo {
   '/scanner': typeof ScannerIndexRoute
   '/venue': typeof VenueIndexRoute
   '/admin/events/$id': typeof AdminEventsIdRoute
+  '/admin/organizers/$id': typeof AdminOrganizersIdRoute
   '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
@@ -428,6 +442,7 @@ export interface FileRoutesByTo {
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
   '/venue/events/new': typeof VenueEventsNewRoute
+  '/admin/organizers': typeof AdminOrganizersIndexRoute
   '/admin/venues': typeof AdminVenuesIndexRoute
   '/invite/$id': typeof InviteIdIndexRoute
   '/organizer/delegation': typeof OrganizerDelegationIndexRoute
@@ -445,7 +460,7 @@ export interface FileRoutesById {
   '/venue': typeof VenueRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
   '/admin/notifications': typeof AdminNotificationsRoute
-  '/admin/organizers': typeof AdminOrganizersRoute
+  '/admin/organizers': typeof AdminOrganizersRouteWithChildren
   '/admin/packages': typeof AdminPackagesRoute
   '/admin/revenue': typeof AdminRevenueRoute
   '/admin/support': typeof AdminSupportRoute
@@ -467,6 +482,7 @@ export interface FileRoutesById {
   '/scanner/': typeof ScannerIndexRoute
   '/venue/': typeof VenueIndexRoute
   '/admin/events/$id': typeof AdminEventsIdRoute
+  '/admin/organizers/$id': typeof AdminOrganizersIdRoute
   '/admin/venues/$id': typeof AdminVenuesIdRoute
   '/invite/$id/qr': typeof InviteIdQrRoute
   '/invite/$id/wallet': typeof InviteIdWalletRoute
@@ -484,6 +500,7 @@ export interface FileRoutesById {
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
   '/venue/events/new': typeof VenueEventsNewRoute
+  '/admin/organizers/': typeof AdminOrganizersIndexRoute
   '/admin/venues/': typeof AdminVenuesIndexRoute
   '/invite/$id/': typeof InviteIdIndexRoute
   '/organizer/delegation/': typeof OrganizerDelegationIndexRoute
@@ -524,6 +541,7 @@ export interface FileRouteTypes {
     | '/scanner/'
     | '/venue/'
     | '/admin/events/$id'
+    | '/admin/organizers/$id'
     | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
@@ -541,6 +559,7 @@ export interface FileRouteTypes {
     | '/venue/credits/buy'
     | '/venue/events/$id'
     | '/venue/events/new'
+    | '/admin/organizers/'
     | '/admin/venues/'
     | '/invite/$id/'
     | '/organizer/delegation/'
@@ -553,7 +572,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/audit'
     | '/admin/notifications'
-    | '/admin/organizers'
     | '/admin/packages'
     | '/admin/revenue'
     | '/admin/support'
@@ -574,6 +592,7 @@ export interface FileRouteTypes {
     | '/scanner'
     | '/venue'
     | '/admin/events/$id'
+    | '/admin/organizers/$id'
     | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
@@ -591,6 +610,7 @@ export interface FileRouteTypes {
     | '/venue/credits/buy'
     | '/venue/events/$id'
     | '/venue/events/new'
+    | '/admin/organizers'
     | '/admin/venues'
     | '/invite/$id'
     | '/organizer/delegation'
@@ -629,6 +649,7 @@ export interface FileRouteTypes {
     | '/scanner/'
     | '/venue/'
     | '/admin/events/$id'
+    | '/admin/organizers/$id'
     | '/admin/venues/$id'
     | '/invite/$id/qr'
     | '/invite/$id/wallet'
@@ -646,6 +667,7 @@ export interface FileRouteTypes {
     | '/venue/credits/buy'
     | '/venue/events/$id'
     | '/venue/events/new'
+    | '/admin/organizers/'
     | '/admin/venues/'
     | '/invite/$id/'
     | '/organizer/delegation/'
@@ -913,6 +935,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminVenuesIndexRouteImport
       parentRoute: typeof AdminVenuesRoute
     }
+    '/admin/organizers/': {
+      id: '/admin/organizers/'
+      path: '/'
+      fullPath: '/admin/organizers/'
+      preLoaderRoute: typeof AdminOrganizersIndexRouteImport
+      parentRoute: typeof AdminOrganizersRoute
+    }
     '/venue/events/new': {
       id: '/venue/events/new'
       path: '/events/new'
@@ -1032,6 +1061,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminVenuesIdRouteImport
       parentRoute: typeof AdminVenuesRoute
     }
+    '/admin/organizers/$id': {
+      id: '/admin/organizers/$id'
+      path: '/$id'
+      fullPath: '/admin/organizers/$id'
+      preLoaderRoute: typeof AdminOrganizersIdRouteImport
+      parentRoute: typeof AdminOrganizersRoute
+    }
     '/admin/events/$id': {
       id: '/admin/events/$id'
       path: '/events/$id'
@@ -1041,6 +1077,20 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminOrganizersRouteChildren {
+  AdminOrganizersIdRoute: typeof AdminOrganizersIdRoute
+  AdminOrganizersIndexRoute: typeof AdminOrganizersIndexRoute
+}
+
+const AdminOrganizersRouteChildren: AdminOrganizersRouteChildren = {
+  AdminOrganizersIdRoute: AdminOrganizersIdRoute,
+  AdminOrganizersIndexRoute: AdminOrganizersIndexRoute,
+}
+
+const AdminOrganizersRouteWithChildren = AdminOrganizersRoute._addFileChildren(
+  AdminOrganizersRouteChildren,
+)
 
 interface AdminVenuesRouteChildren {
   AdminVenuesIdRoute: typeof AdminVenuesIdRoute
@@ -1059,7 +1109,7 @@ const AdminVenuesRouteWithChildren = AdminVenuesRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminAuditRoute: typeof AdminAuditRoute
   AdminNotificationsRoute: typeof AdminNotificationsRoute
-  AdminOrganizersRoute: typeof AdminOrganizersRoute
+  AdminOrganizersRoute: typeof AdminOrganizersRouteWithChildren
   AdminPackagesRoute: typeof AdminPackagesRoute
   AdminRevenueRoute: typeof AdminRevenueRoute
   AdminSupportRoute: typeof AdminSupportRoute
@@ -1071,7 +1121,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAuditRoute: AdminAuditRoute,
   AdminNotificationsRoute: AdminNotificationsRoute,
-  AdminOrganizersRoute: AdminOrganizersRoute,
+  AdminOrganizersRoute: AdminOrganizersRouteWithChildren,
   AdminPackagesRoute: AdminPackagesRoute,
   AdminRevenueRoute: AdminRevenueRoute,
   AdminSupportRoute: AdminSupportRoute,
@@ -1190,13 +1240,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
