@@ -47,12 +47,12 @@ export function SectionHeader({
 }
 
 const COVERS: Record<string, string> = {
-  onyx: "from-zinc-900 via-zinc-800 to-zinc-700",
-  pearl: "from-zinc-200 via-zinc-100 to-white",
-  graphite: "from-zinc-800 via-zinc-700 to-zinc-600",
-  smoke: "from-zinc-700 via-zinc-600 to-zinc-500",
-  ivory: "from-stone-100 via-stone-200 to-stone-300",
-  ink: "from-black via-zinc-900 to-zinc-800",
+  onyx: "from-indigo-950 via-slate-900 to-indigo-800",
+  pearl: "from-rose-100 via-amber-50 to-orange-100",
+  graphite: "from-emerald-950 via-teal-900 to-emerald-700",
+  smoke: "from-purple-950 via-fuchsia-900 to-rose-800",
+  ivory: "from-emerald-100 via-lime-50 to-teal-100",
+  ink: "from-rose-950 via-red-900 to-amber-800",
 };
 
 export function EventCover({ cover, className, children }: { cover: string; className?: string; children?: ReactNode }) {
