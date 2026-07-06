@@ -49,8 +49,8 @@ function EventsList() {
             <EventCover cover={e.cover} className="h-40">
               <div className="flex h-full flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-widest opacity-80">{format(new Date(e.date), "MMM d, yyyy")}</p>
-                  <StatusChip status={e.status} />
+                  <p className="text-xs uppercase tracking-widest opacity-75">{format(new Date(e.date), "MMM d, yyyy")}</p>
+                  <span className="text-[10px] uppercase tracking-widest rounded-full border border-current/30 px-2 py-0.5 opacity-75">{e.status}</span>
                 </div>
                 <div>
                   <h3 className="font-serif text-2xl leading-tight">{e.name}</h3>
@@ -62,24 +62,5 @@ function EventsList() {
         ))}
       </div>
     </MobileShell>
-  );
-}
-
-function StatusChip({ status }: { status: "upcoming" | "past" | "live" }) {
-  const map = {
-    upcoming: "bg-emerald-400/90 text-emerald-950 ring-1 ring-emerald-200/40",
-    live: "bg-amber-400/95 text-amber-950 ring-1 ring-amber-200/40 animate-pulse",
-    past: "bg-white/15 text-white ring-1 ring-white/25 backdrop-blur",
-  } as const;
-  const dot = {
-    upcoming: "bg-emerald-700",
-    live: "bg-red-600",
-    past: "bg-white/70",
-  } as const;
-  return (
-    <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest", map[status])}>
-      <span className={cn("h-1.5 w-1.5 rounded-full", dot[status])} />
-      {status}
-    </span>
   );
 }
