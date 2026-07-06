@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/gala/MobileShell";
 import { EventCover, StatCard } from "@/components/gala/Primitives";
-import { eventById, guestsByEvent, rsvpStats, coInviters } from "@/mock/data";
+import { eventById, guestsByEvent, rsvpStats, coInviters, venueById } from "@/mock/data";
 import { format } from "date-fns";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Send, Users, CreditCard, BarChart3, UserPlus, CheckCircle2, Clock, XCircle, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
+import { Send, UserPlus, CheckCircle2, Clock, XCircle, AlertCircle, MapPin, Navigation, Copy, KeyRound, ScanLine } from "lucide-react";
 
 export const Route = createFileRoute("/organizer/events/$id")({
   component: EventDetail,
