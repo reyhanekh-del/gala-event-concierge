@@ -49,8 +49,8 @@ function EventsList() {
             <EventCover cover={e.cover} className="h-40">
               <div className="flex h-full flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-widest opacity-75">{format(new Date(e.date), "MMM d, yyyy")}</p>
-                  <span className="text-[10px] uppercase tracking-widest rounded-full border border-current/30 px-2 py-0.5 opacity-75">{e.status}</span>
+                  <p className="text-xs uppercase tracking-widest opacity-80">{format(new Date(e.date), "MMM d, yyyy")}</p>
+                  <StatusChip status={e.status} />
                 </div>
                 <div>
                   <h3 className="font-serif text-2xl leading-tight">{e.name}</h3>
