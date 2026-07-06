@@ -71,13 +71,68 @@ function EventDetail() {
               <StatCard label="Rejected" value={stats.rejected} />
               <StatCard label="Checked-in" value={stats.checkedin} />
             </div>
+
+            {/* Venue & location */}
+            <div className="rounded-2xl border bg-card overflow-hidden">
+              <div className="aspect-[16/10] w-full bg-muted">
+                <iframe
+                  title="Venue map"
+                  src={mapEmbedSrc}
+                  className="h-full w-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+              <div className="p-4 space-y-3">
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-muted-foreground" />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate">{venue?.name ?? "Venue"}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{e.address}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <a href={mapsHref} target="_blank" rel="noreferrer" className="rounded-lg border py-2 text-center text-xs font-medium hover:bg-muted">
+                    Google
+                  </a>
+                  <a href={appleMapsHref} target="_blank" rel="noreferrer" className="rounded-lg border py-2 text-center text-xs font-medium hover:bg-muted">
+                    Apple
+                  </a>
+                  <a href={wazeHref} target="_blank" rel="noreferrer" className="rounded-lg border py-2 text-center text-xs font-medium hover:bg-muted inline-flex items-center justify-center gap-1">
+                    <Navigation className="h-3 w-3" /> Waze
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Scanner PIN */}
+            <div className="rounded-2xl border bg-card p-5">
+              <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
+                <KeyRound className="h-3.5 w-3.5" /> Scanner door PIN
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <p className="font-serif text-4xl tracking-[0.35em]">{e.scannerPin}</p>
+                <button
+                  onClick={() => { navigator.clipboard.writeText(e.scannerPin); toast.success("PIN copied"); }}
+                  className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                >
+                  <Copy className="h-3.5 w-3.5" /> Copy
+                </button>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">Share with staff at the door to unlock the scanner.</p>
+              <Link to="/scanner" className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium underline underline-offset-2">
+                <ScanLine className="h-3.5 w-3.5" /> Open scanner
+              </Link>
+            </div>
+
+            {/* About */}
             <div className="rounded-2xl border bg-card p-5">
               <h3 className="text-xs uppercase tracking-widest text-muted-foreground">About this event</h3>
               <p className="mt-2 text-sm leading-relaxed">
-                Hosted by <span className="font-medium">{e.host}</span> at {e.address}. Doors open one hour before.
-                Scanner PIN: <span className="font-mono">{e.scannerPin}</span>
+                Hosted by <span className="font-medium">{e.host}</span>. Doors open one hour before start time.
               </p>
             </div>
+
             <div className="grid grid-cols-2 gap-3">
               <Link to="/organizer/invite" className="rounded-2xl bg-foreground text-background p-4 flex items-center gap-3">
                 <Send className="h-4 w-4" /> <span className="text-sm font-medium">Invite guest</span>
