@@ -24,6 +24,12 @@ function EventDetail() {
   const guests = guestsByEvent(e.id);
   const stats = rsvpStats(e.id);
   const delegates = coInviters.filter((c) => c.eventId === e.id);
+  const venue = venueById(e.venueId);
+  const mapQuery = encodeURIComponent(`${venue?.name ?? ""} ${e.address}`);
+  const mapsHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+  const appleMapsHref = `https://maps.apple.com/?q=${mapQuery}`;
+  const wazeHref = `https://waze.com/ul?q=${mapQuery}`;
+  const mapEmbedSrc = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
 
   return (
     <MobileShell showBack title={e.name}>
