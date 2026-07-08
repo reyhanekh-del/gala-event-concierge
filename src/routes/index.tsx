@@ -30,48 +30,153 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
+const COPY = {
+  en: {
+    nav: { about: "About", features: "Features", preview: "Preview" },
+    eyebrow: "Gala · Occasions",
+    heroTitle: (
+      <>
+        Invitations,<br />refined.
+      </>
+    ),
+    heroSubtitle:
+      "A premium invitation and RSVP platform for the GCC. Built for hotels, organizers and their guests — from the first invite to the final check-in.",
+    comingSoon: "Coming soon",
+    aboutEyebrow: "About Gala",
+    aboutTitle: "The way a proper invitation should feel — online.",
+    aboutP1:
+      "Gala replaces the WhatsApp-forwarded flyer with something quieter, clearer and worthy of the occasion. Venues manage credits and events. Organizers claim, invite and delegate. Guests confirm on a beautiful link and walk in with a QR pass.",
+    aboutP2:
+      "Every screen is bilingual, mirrors for Arabic, and behaves like a product built for the region rather than translated into it.",
+    stat1Label: "Connected apps",
+    stat2Value: "AR / EN",
+    stat2Label: "Bilingual, RTL",
+    stat3Label: "Mock prototype",
+    featuresEyebrow: "What's inside",
+    featuresTitle: "End-to-end, thoughtfully.",
+    features: [
+      {
+        icon: Mail,
+        title: "Refined invitations",
+        body: "Serif typography, quiet motion and a monochrome palette that reads as premium — in Arabic and English.",
+      },
+      {
+        icon: QrCode,
+        title: "QR RSVPs & check-in",
+        body: "Guests confirm on a shareable link. A scannable pass per attendee. Door staff scan with a PIN — done.",
+      },
+      {
+        icon: BarChart3,
+        title: "Live analytics",
+        body: "Funnel, response times, attendance and revenue — for organizers, venues and Gala admin.",
+      },
+      {
+        icon: ShieldCheck,
+        title: "Roles & delegation",
+        body: "Venues buy credits, organizers claim events, co-inviters get allocations. Everything auditable.",
+      },
+      {
+        icon: Languages,
+        title: "Arabic-first, RTL",
+        body: "Every screen mirrors cleanly. Minion Pro for headlines, Noto Kufi for Arabic body.",
+      },
+      {
+        icon: Sparkles,
+        title: "Five apps, one system",
+        body: "Organizer mobile · Invitee web · Venue portal · Door scanner · Gala admin.",
+      },
+    ],
+    previewEyebrow: "Preview",
+    previewTitle: "Every surface, in one place.",
+    openLauncher: "Open the launcher",
+    shots: [
+      { label: "Organizer · Dashboard" },
+      { label: "Invitee · RSVP" },
+      { label: "Venue · Portal" },
+      { label: "Door · Scanner" },
+    ],
+    ctaTitle: "Step inside the prototype.",
+    ctaBody: "All five apps are clickable with realistic mock data. No sign-in required.",
+    ctaButton: "Explore Gala",
+    footer: "Gala Occasions · Prototype",
+  },
+  ar: {
+    nav: { about: "عن Gala", features: "المزايا", preview: "المعاينة" },
+    eyebrow: "Gala · للمناسبات",
+    heroTitle: (
+      <>
+        دعوات،<br />بأسلوب راقٍ.
+      </>
+    ),
+    heroSubtitle:
+      "منصة دعوات وحضور فاخرة لدول الخليج. مصمّمة للفنادق والمنظّمين وضيوفهم — من أول دعوة إلى تسجيل الدخول عند الباب.",
+    comingSoon: "قريباً",
+    aboutEyebrow: "عن Gala",
+    aboutTitle: "الدعوة الراقية كما ينبغي أن تكون — على الإنترنت.",
+    aboutP1:
+      "تستبدل Gala المنشور المُرسَل عبر واتساب بتجربة أهدأ وأوضح وتليق بالمناسبة. الأماكن تدير الرصيد والفعاليات. المنظّمون يستلمون الفعاليات ويدعون ويفوّضون. الضيوف يؤكّدون عبر رابط أنيق ويدخلون برمز QR.",
+    aboutP2:
+      "كل شاشة ثنائية اللغة وتنعكس بالكامل للعربية، وتتصرف كمنتج مصمّم للمنطقة لا مترجم إليها.",
+    stat1Label: "تطبيقات متكاملة",
+    stat2Value: "عربي / EN",
+    stat2Label: "ثنائي اللغة، RTL",
+    stat3Label: "نموذج تجريبي",
+    featuresEyebrow: "ما تجده داخلها",
+    featuresTitle: "تجربة متكاملة، بعناية.",
+    features: [
+      {
+        icon: Mail,
+        title: "دعوات راقية",
+        body: "خطوط سيريف، حركة هادئة، وألوان أحادية بلمسة فاخرة — بالعربية والإنجليزية.",
+      },
+      {
+        icon: QrCode,
+        title: "ردود وتسجيل دخول بـ QR",
+        body: "الضيف يؤكّد عبر رابط قابل للمشاركة، ولكل حاضر تذكرة QR قابلة للمسح. طاقم الباب يمسح برمز PIN — انتهى.",
+      },
+      {
+        icon: BarChart3,
+        title: "تحليلات لحظية",
+        body: "قمع الردود، أوقات الاستجابة، الحضور والإيرادات — للمنظّمين والأماكن وإدارة Gala.",
+      },
+      {
+        icon: ShieldCheck,
+        title: "الأدوار والتفويض",
+        body: "الأماكن تشتري الرصيد، المنظّمون يستلمون الفعاليات، والمساعدون يحصلون على حصص. كل شيء موثّق.",
+      },
+      {
+        icon: Languages,
+        title: "العربية أولاً، RTL",
+        body: "كل شاشة تنعكس بدقة. Minion Pro للعناوين، Noto Kufi للنص العربي.",
+      },
+      {
+        icon: Sparkles,
+        title: "خمس تطبيقات، منظومة واحدة",
+        body: "تطبيق المنظّم · صفحة المدعو · بوابة المكان · ماسح الباب · إدارة Gala.",
+      },
+    ],
+    previewEyebrow: "معاينة",
+    previewTitle: "كل الواجهات في مكان واحد.",
+    openLauncher: "افتح لوحة التجربة",
+    shots: [
+      { label: "المنظّم · الرئيسية" },
+      { label: "المدعو · الردود" },
+      { label: "المكان · البوابة" },
+      { label: "الباب · الماسح" },
+    ],
+    ctaTitle: "ادخل إلى النموذج التجريبي.",
+    ctaBody: "التطبيقات الخمسة قابلة للتصفح ببيانات واقعية. لا حاجة لتسجيل الدخول.",
+    ctaButton: "استكشف Gala",
+    footer: "Gala للمناسبات · نموذج تجريبي",
+  },
+} as const;
+
 function Landing() {
   const { locale, setLocale } = useI18n();
+  const c = COPY[locale];
 
-  const features = [
-    {
-      icon: Mail,
-      title: "Refined invitations",
-      body: "Serif typography, quiet motion and a monochrome palette that reads as premium — in Arabic and English.",
-    },
-    {
-      icon: QrCode,
-      title: "QR RSVPs & check-in",
-      body: "Guests confirm on a shareable link. A scannable pass per attendee. Door staff scan with a PIN — done.",
-    },
-    {
-      icon: BarChart3,
-      title: "Live analytics",
-      body: "Funnel, response times, attendance and revenue — for organizers, venues and Gala admin.",
-    },
-    {
-      icon: ShieldCheck,
-      title: "Roles & delegation",
-      body: "Venues buy credits, organizers claim events, co-inviters get allocations. Everything auditable.",
-    },
-    {
-      icon: Languages,
-      title: "Arabic-first, RTL",
-      body: "Every screen mirrors cleanly. Minion Pro for headlines, Noto Kufi for Arabic body.",
-    },
-    {
-      icon: Sparkles,
-      title: "Five apps, one system",
-      body: "Organizer mobile · Invitee web · Venue portal · Door scanner · Gala admin.",
-    },
-  ];
-
-  const shots = [
-    { src: organizerShot, label: "Organizer · Dashboard", to: "/organizer/dashboard" },
-    { src: inviteShot, label: "Invitee · RSVP", to: "/invite/g_e_wedding_0" },
-    { src: venueShot, label: "Venue · Portal", to: "/venue" },
-    { src: scannerShot, label: "Door · Scanner", to: "/scanner/scan" },
-  ];
+  const shotImages = [organizerShot, inviteShot, venueShot, scannerShot];
+  const shotLinks = ["/organizer/dashboard", "/invite/g_e_wedding_0", "/venue", "/scanner/scan"] as const;
 
   return (
     <div className="min-h-screen bg-background bg-noise">
@@ -80,9 +185,9 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
           <GalaLogo />
           <nav className="hidden items-center gap-8 md:flex text-sm text-muted-foreground">
-            <a href="#about" className="hover:text-foreground">About</a>
-            <a href="#features" className="hover:text-foreground">Features</a>
-            <a href="#preview" className="hover:text-foreground">Preview</a>
+            <a href="#about" className="hover:text-foreground">{c.nav.about}</a>
+            <a href="#features" className="hover:text-foreground">{c.nav.features}</a>
+            <a href="#preview" className="hover:text-foreground">{c.nav.preview}</a>
           </nav>
           <div className="flex items-center gap-2">
             <button
@@ -100,36 +205,33 @@ function Landing() {
       <section className="relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-6 pt-20 pb-16 lg:px-12 lg:pt-32 lg:pb-24">
           <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-            Gala · Occasions
+            {c.eyebrow}
           </p>
           <h1 className="mt-6 max-w-4xl font-serif text-6xl leading-[1.02] tracking-tight md:text-8xl">
-            Invitations,<br />refined.
+            {c.heroTitle}
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            A premium invitation and RSVP platform for the GCC. Built for hotels,
-            organizers and their guests — from the first invite to the final
-            check-in.
+            {c.heroSubtitle}
           </p>
           <div className="mt-10">
             <span className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-medium text-muted-foreground">
               <span className="h-1.5 w-1.5 rounded-full bg-foreground/60" />
-              Coming soon
+              {c.comingSoon}
             </span>
           </div>
         </div>
 
-        {/* hero image collage */}
         <div className="mx-auto max-w-7xl px-6 lg:px-12">
           <div className="relative grid grid-cols-12 gap-4 pb-24">
             <div className="col-span-12 md:col-span-7 rounded-3xl overflow-hidden border shadow-elegant bg-card">
-              <img src={venueShot} alt="Venue portal dashboard" className="w-full h-auto" />
+              <img src={venueShot} alt="" className="w-full h-auto" />
             </div>
             <div className="col-span-12 md:col-span-5 flex flex-col gap-4">
               <div className="rounded-3xl overflow-hidden border shadow-elegant bg-card">
-                <img src={organizerShot} alt="Organizer app" className="w-full h-auto" />
+                <img src={organizerShot} alt="" className="w-full h-auto" />
               </div>
               <div className="rounded-3xl overflow-hidden border shadow-elegant bg-card">
-                <img src={scannerShot} alt="Door scanner" className="w-full h-auto" />
+                <img src={scannerShot} alt="" className="w-full h-auto" />
               </div>
             </div>
           </div>
@@ -141,27 +243,19 @@ function Landing() {
         <div className="mx-auto grid max-w-7xl gap-16 px-6 py-24 lg:grid-cols-12 lg:px-12 lg:py-32">
           <div className="lg:col-span-5">
             <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
-              About Gala
+              {c.aboutEyebrow}
             </p>
             <h2 className="mt-4 font-serif text-4xl md:text-5xl tracking-tight leading-[1.05]">
-              The way a proper invitation should feel — online.
+              {c.aboutTitle}
             </h2>
           </div>
           <div className="lg:col-span-7 space-y-6 text-base leading-relaxed text-muted-foreground">
-            <p>
-              Gala replaces the WhatsApp-forwarded flyer with something quieter,
-              clearer and worthy of the occasion. Venues manage credits and
-              events. Organizers claim, invite and delegate. Guests confirm on a
-              beautiful link and walk in with a QR pass.
-            </p>
-            <p>
-              Every screen is bilingual, mirrors for Arabic, and behaves like a
-              product built for the region rather than translated into it.
-            </p>
+            <p>{c.aboutP1}</p>
+            <p>{c.aboutP2}</p>
             <div className="grid grid-cols-3 gap-6 pt-4">
-              <Stat n="5" label="Connected apps" />
-              <Stat n="AR / EN" label="Bilingual, RTL" />
-              <Stat n="100%" label="Mock prototype" />
+              <Stat n="5" label={c.stat1Label} />
+              <Stat n={c.stat2Value} label={c.stat2Label} />
+              <Stat n="100%" label={c.stat3Label} />
             </div>
           </div>
         </div>
@@ -172,14 +266,14 @@ function Landing() {
         <div className="mx-auto max-w-7xl px-6 py-24 lg:px-12 lg:py-32">
           <div className="max-w-2xl">
             <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
-              What's inside
+              {c.featuresEyebrow}
             </p>
             <h2 className="mt-4 font-serif text-4xl md:text-5xl tracking-tight">
-              End-to-end, thoughtfully.
+              {c.featuresTitle}
             </h2>
           </div>
           <div className="mt-14 grid gap-px overflow-hidden rounded-2xl border bg-border md:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => {
+            {c.features.map((f) => {
               const Icon = f.icon;
               return (
                 <div key={f.title} className="bg-card p-8">
@@ -201,31 +295,31 @@ function Landing() {
           <div className="flex items-end justify-between flex-wrap gap-6">
             <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
-                Preview
+                {c.previewEyebrow}
               </p>
               <h2 className="mt-4 font-serif text-4xl md:text-5xl tracking-tight">
-                Every surface, in one place.
+                {c.previewTitle}
               </h2>
             </div>
             <Link
               to="/apps"
               className="inline-flex items-center gap-1.5 text-sm font-medium hover:underline"
             >
-              Open the launcher
+              {c.openLauncher}
               <ArrowRight className="h-4 w-4 rtl:rotate-180" />
             </Link>
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2">
-            {shots.map((s) => (
+            {c.shots.map((s, i) => (
               <Link
                 key={s.label}
-                to={s.to}
+                to={shotLinks[i]}
                 className="group rounded-3xl overflow-hidden border bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant"
               >
                 <div className="aspect-[16/10] overflow-hidden bg-muted">
                   <img
-                    src={s.src}
+                    src={shotImages[i]}
                     alt={s.label}
                     className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
                   />
@@ -245,17 +339,17 @@ function Landing() {
         <div className="mx-auto max-w-7xl px-6 py-24 lg:px-12 lg:py-32 text-center">
           <GalaMark className="mx-auto h-12 w-12 invert" />
           <h2 className="mt-8 font-serif text-5xl md:text-6xl tracking-tight">
-            Step inside the prototype.
+            {c.ctaTitle}
           </h2>
           <p className="mt-4 text-background/60 max-w-lg mx-auto">
-            All five apps are clickable with realistic mock data. No sign-in required.
+            {c.ctaBody}
           </p>
           <div className="mt-10">
             <Link
               to="/apps"
               className="inline-flex items-center gap-2 rounded-full bg-background px-7 py-3 text-sm font-medium text-foreground hover:opacity-90"
             >
-              Explore Gala
+              {c.ctaButton}
               <ArrowRight className="h-4 w-4 rtl:rotate-180" />
             </Link>
           </div>
@@ -267,7 +361,7 @@ function Landing() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-8 lg:px-12">
           <GalaLogo />
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Gala Occasions · Prototype
+            © {new Date().getFullYear()} {c.footer}
           </p>
         </div>
       </footer>
