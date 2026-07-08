@@ -6,8 +6,8 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/apps")({
   head: () => ({
     meta: [
-      { title: "Gala — Invitations, refined." },
-      { name: "description", content: "Premium invitation & RSVP platform for venues, organizers and guests across the GCC." },
+      { title: "Explore Gala — Prototype apps" },
+      { name: "description", content: "Jump into any of the Gala prototype apps: Organizer, Invitee, Venue, Scanner, and Admin." },
     ],
   }),
   component: Launcher,
