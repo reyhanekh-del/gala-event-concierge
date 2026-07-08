@@ -3,7 +3,7 @@ import { ArrowRight, Smartphone, Mail, Building2, ScanLine, Shield, Globe } from
 import { GalaLogo, GalaMark } from "@/components/gala/Logo";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/apps")({
   head: () => ({
     meta: [
       { title: "Gala — Invitations, refined." },

@@ -12,8 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VenueRouteImport } from './routes/venue'
 import { Route as ScannerRouteImport } from './routes/scanner'
 import { Route as OrganizerRouteImport } from './routes/organizer'
+import { Route as AppsRouteImport } from './routes/apps'
 import { Route as AdminRouteImport } from './routes/admin'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as VenueIndexRouteImport } from './routes/venue.index'
 import { Route as ScannerIndexRouteImport } from './routes/scanner.index'
 import { Route as OrganizerIndexRouteImport } from './routes/organizer.index'
@@ -81,14 +81,14 @@ const OrganizerRoute = OrganizerRouteImport.update({
   path: '/organizer',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppsRoute = AppsRouteImport.update({
+  id: '/apps',
+  path: '/apps',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VenueIndexRoute = VenueIndexRouteImport.update({
@@ -350,8 +350,8 @@ const AdminEventsIdRoute = AdminEventsIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/apps': typeof AppsRoute
   '/organizer': typeof OrganizerRouteWithChildren
   '/scanner': typeof ScannerRouteWithChildren
   '/venue': typeof VenueRouteWithChildren
@@ -408,7 +408,7 @@ export interface FileRoutesByFullPath {
   '/venue/events/': typeof VenueEventsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/apps': typeof AppsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/packages': typeof AdminPackagesRoute
@@ -461,8 +461,8 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/apps': typeof AppsRoute
   '/organizer': typeof OrganizerRouteWithChildren
   '/scanner': typeof ScannerRouteWithChildren
   '/venue': typeof VenueRouteWithChildren
@@ -521,8 +521,8 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/admin'
+    | '/apps'
     | '/organizer'
     | '/scanner'
     | '/venue'
@@ -579,7 +579,7 @@ export interface FileRouteTypes {
     | '/venue/events/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
+    | '/apps'
     | '/admin/audit'
     | '/admin/notifications'
     | '/admin/packages'
@@ -631,8 +631,8 @@ export interface FileRouteTypes {
     | '/venue/events'
   id:
     | '__root__'
-    | '/'
     | '/admin'
+    | '/apps'
     | '/organizer'
     | '/scanner'
     | '/venue'
@@ -690,8 +690,8 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AppsRoute: typeof AppsRoute
   OrganizerRoute: typeof OrganizerRouteWithChildren
   ScannerRoute: typeof ScannerRouteWithChildren
   VenueRoute: typeof VenueRouteWithChildren
@@ -723,18 +723,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/apps': {
+      id: '/apps'
+      path: '/apps'
+      fullPath: '/apps'
+      preLoaderRoute: typeof AppsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/venue/': {
@@ -1249,8 +1249,8 @@ const VenueRouteChildren: VenueRouteChildren = {
 const VenueRouteWithChildren = VenueRoute._addFileChildren(VenueRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  AppsRoute: AppsRoute,
   OrganizerRoute: OrganizerRouteWithChildren,
   ScannerRoute: ScannerRouteWithChildren,
   VenueRoute: VenueRouteWithChildren,
