@@ -92,13 +92,6 @@ function Landing() {
               <Globe className="h-3.5 w-3.5" />
               {locale === "en" ? "العربية" : "English"}
             </button>
-            <Link
-              to="/apps"
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-1.5 text-xs font-medium text-background hover:opacity-90"
-            >
-              Explore prototype
-              <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
-            </Link>
           </div>
         </div>
       </header>
