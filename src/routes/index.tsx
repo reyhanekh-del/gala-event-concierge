@@ -117,21 +117,11 @@ function Landing() {
             organizers and their guests — from the first invite to the final
             check-in.
           </p>
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            <Link
-              to="/apps"
-              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background hover:opacity-90"
-            >
-              Explore the prototype
-              <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-            </Link>
-            <Link
-              to="/invite/$id"
-              params={{ id: "g_e_wedding_0" }}
-              className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-medium hover:bg-muted"
-            >
-              See a sample invite
-            </Link>
+          <div className="mt-10">
+            <span className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-medium text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-foreground/60" />
+              Coming soon
+            </span>
           </div>
         </div>
 
