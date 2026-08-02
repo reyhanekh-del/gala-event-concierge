@@ -149,6 +149,12 @@ function BuyCredits() {
             <dt className="text-xs uppercase tracking-widest text-muted-foreground">Total amount</dt>
             <dd className="font-serif text-4xl tabular-nums leading-none">{kwd(total)}</dd>
           </div>
+          <button
+            onClick={() => toast.success(`${qty.toLocaleString()} credits — ${kwd(total)}`)}
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-3.5 text-sm font-medium text-background transition-opacity hover:opacity-90 active:scale-[0.99]"
+          >
+            Purchase <ArrowRight className="h-4 w-4 rtl:rotate-180" />
+          </button>
         </section>
 
         {/* Better value */}
