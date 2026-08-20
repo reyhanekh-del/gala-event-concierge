@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { stagedById } from "@/mock/guestListStore";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/invite/$id/")({
@@ -40,13 +41,15 @@ function Invite() {
   const e = g && eventById(g.eventId);
   const v = e && venueById(e.venueId);
 
-  const groupSize = g?.groupSize ?? 1;
+  const stagedEntry = stagedById(id);
+  const namedMembers = stagedEntry?.members ?? [];
+  const groupSize = namedMembers.length || g?.groupSize || 1;
   const isMulti = groupSize > 1;
 
   const [people, setPeople] = useState<Person[]>(() =>
     Array.from({ length: groupSize }, (_, i) => ({
-      id: `${id}-p${i + 1}`,
-      name: i === 0 ? g?.name ?? "Guest" : `Guest ${i + 1}`,
+      id: namedMembers[i]?.id ?? `${id}-p${i + 1}`,
+      name: namedMembers[i]?.name || (i === 0 ? g?.name ?? "Guest" : `Guest ${i + 1}`),
       status: "pending" as PersonStatus,
     })),
   );
