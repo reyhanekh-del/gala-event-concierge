@@ -202,6 +202,28 @@ function GuestList() {
           >
             <BookUser className="h-4 w-4" /> Import contacts
           </button>
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="flex items-center justify-center gap-2 rounded-2xl border bg-card py-3 text-sm font-medium hover:bg-muted"
+          >
+            <FileUp className="h-4 w-4" /> Import CSV
+          </button>
+          <button
+            onClick={downloadTemplate}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-dashed py-3 text-sm text-muted-foreground hover:bg-muted"
+          >
+            <Download className="h-4 w-4" /> CSV template
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".csv,text/csv,text/plain"
+            className="hidden"
+            onChange={(e) => {
+              void onFile(e.target.files?.[0]);
+              e.target.value = "";
+            }}
+          />
         </div>
 
         <div className="relative">
