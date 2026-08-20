@@ -80,6 +80,7 @@ let staged: StagedGuest[] = seedGuests.slice(0, 40).map((g, i) => {
     displayName: undefined,
     reviewed: false,
     phone: g.phone,
+    members: Array.from({ length: g.groupSize ?? 1 }, (_, k) => makeMember(k === 0 ? g.name : `Guest ${k + 1}`)),
     groupSize: g.groupSize ?? 1,
     state,
     invitedAt: g.invitedAt,
