@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/gala/MobileShell";
 import { organizerTabs } from "@/components/gala/organizerTabs";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { CSV_TEMPLATE, parseGuestCsv, type CsvError, type CsvRow } from "@/lib/csvGuests";
 import { events } from "@/mock/data";
 import {
   MAIN_ORGANIZER_ID,
@@ -16,7 +17,7 @@ import {
   type StagedGuest,
 } from "@/mock/guestListStore";
 import { toast } from "sonner";
-import { BookUser, Plus, Search, Trash2, Users, X } from "lucide-react";
+import { AlertTriangle, BookUser, Download, FileUp, Plus, Search, Trash2, Users, X } from "lucide-react";
 
 export const Route = createFileRoute("/organizer/guests")({
   component: GuestList,
@@ -55,6 +56,8 @@ function GuestList() {
   const [viewerId, setViewerId] = useState(MAIN_ORGANIZER_ID);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const [csv, setCsv] = useState<{ fileName: string; rows: CsvRow[]; errors: CsvError[]; total: number } | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const all = useGuestList();
 
   const inviters = invitersForEvent(eventId);
@@ -88,6 +91,56 @@ function GuestList() {
     }
     addGuest({ eventId, inviterId: viewerId, contactName: name.trim(), phone, groupSize });
     toast.success(`${name} staged`);
+  };
+
+  const onFile = async (file: File | null | undefined) => {
+    if (!file) return;
+    if (!/\.(csv|txt)$/i.test(file.name)) {
+      toast.error("Please choose a .csv file");
+      return;
+    }
+    if (file.size > 1_000_000) {
+      toast.error("File is too large (max 1 MB)");
+      return;
+    }
+    const text = await file.text();
+    const parsed = parseGuestCsv(text);
+    if (!parsed.total) {
+      toast.error("No guest rows found in this file");
+      return;
+    }
+    setCsv({ fileName: file.name, ...parsed });
+  };
+
+  const importCsv = () => {
+    if (!csv) return;
+    let added = 0;
+    const skipped: CsvError[] = [];
+    csv.rows.forEach((r) => {
+      const dupe = checkDuplicate(eventId, r.phone, r.name);
+      if (dupe.kind === "ok" || dupe.kind === "confirm") {
+        addGuest({ eventId, inviterId: viewerId, contactName: r.name, phone: r.phone, groupSize: r.groupSize });
+        added++;
+      } else {
+        skipped.push({ line: r.line, raw: `${r.name}, ${r.phone}`, reason: dupe.message });
+      }
+    });
+    setCsv(null);
+    if (skipped.length) {
+      setCsv({ fileName: "Skipped rows", rows: [], errors: skipped, total: skipped.length });
+    }
+    toast[added ? "success" : "error"](
+      added ? `Imported ${added} guest${added === 1 ? "" : "s"}${skipped.length ? ` · ${skipped.length} skipped` : ""}` : "No guests imported",
+    );
+  };
+
+  const downloadTemplate = () => {
+    const url = URL.createObjectURL(new Blob([CSV_TEMPLATE], { type: "text/csv" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "gala-guest-list-template.csv";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -149,6 +202,28 @@ function GuestList() {
           >
             <BookUser className="h-4 w-4" /> Import contacts
           </button>
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="flex items-center justify-center gap-2 rounded-2xl border bg-card py-3 text-sm font-medium hover:bg-muted"
+          >
+            <FileUp className="h-4 w-4" /> Import CSV
+          </button>
+          <button
+            onClick={downloadTemplate}
+            className="flex items-center justify-center gap-2 rounded-2xl border border-dashed py-3 text-sm text-muted-foreground hover:bg-muted"
+          >
+            <Download className="h-4 w-4" /> CSV template
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".csv,text/csv,text/plain"
+            className="hidden"
+            onChange={(e) => {
+              void onFile(e.target.files?.[0]);
+              e.target.value = "";
+            }}
+          />
         </div>
 
         <div className="relative">
@@ -194,6 +269,16 @@ function GuestList() {
       </div>
 
       {open && <AddSheet onClose={() => setOpen(false)} onAdd={tryAdd} />}
+      {csv && (
+        <CsvSheet
+          fileName={csv.fileName}
+          rows={csv.rows}
+          errors={csv.errors}
+          total={csv.total}
+          onClose={() => setCsv(null)}
+          onImport={importCsv}
+        />
+      )}
     </MobileShell>
   );
 }
@@ -229,6 +314,87 @@ function AddSheet({ onClose, onAdd }: { onClose: () => void; onAdd: (n: string, 
         >
           Add to guest list
         </button>
+      </div>
+    </div>
+  );
+}
+
+function CsvSheet({
+  fileName,
+  rows,
+  errors,
+  total,
+  onClose,
+  onImport,
+}: {
+  fileName: string;
+  rows: CsvRow[];
+  errors: CsvError[];
+  total: number;
+  onClose: () => void;
+  onImport: () => void;
+}) {
+  return (
+    <div className="absolute inset-0 z-50 flex items-end bg-black/40" onClick={onClose}>
+      <div className="w-full max-h-[85%] overflow-y-auto rounded-t-3xl bg-background p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between">
+          <div className="min-w-0">
+            <p className="font-medium truncate">{rows.length ? "Review CSV import" : "Import report"}</p>
+            <p className="text-xs text-muted-foreground truncate">{fileName} · {total} row{total === 1 ? "" : "s"} read</p>
+          </div>
+          <button onClick={onClose} aria-label="Close"><X className="h-4 w-4" /></button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <div className="rounded-2xl border bg-card p-4">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">Valid</p>
+            <p className="font-serif text-3xl mt-1">{rows.length}</p>
+          </div>
+          <div className="rounded-2xl border bg-card p-4">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">Errors</p>
+            <p className="font-serif text-3xl mt-1">{errors.length}</p>
+          </div>
+        </div>
+
+        {errors.length > 0 && (
+          <div className="rounded-2xl border border-amber-300/60 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950/40">
+            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-amber-900 dark:text-amber-200">
+              <AlertTriangle className="h-3.5 w-3.5" /> Rows not imported
+            </p>
+            <ul className="mt-3 space-y-2">
+              {errors.map((e, i) => (
+                <li key={`${e.line}-${i}`} className="text-xs text-amber-900 dark:text-amber-200">
+                  <span className="font-medium">Line {e.line}:</span> {e.reason}
+                  <p className="truncate font-mono text-[11px] opacity-70">{e.raw}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {rows.length > 0 && (
+          <div className="space-y-2">
+            {rows.map((r) => (
+              <div key={r.line} className="flex items-center justify-between rounded-2xl border bg-card px-4 py-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{r.name}</p>
+                  <p className="text-xs text-muted-foreground">{r.phone}</p>
+                </div>
+                <span className="text-xs text-muted-foreground">{r.groupSize > 1 ? `Group of ${r.groupSize}` : "Individual"}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {rows.length > 0 ? (
+          <button onClick={onImport} className="w-full rounded-full bg-foreground py-4 text-sm font-medium text-background">
+            Add {rows.length} guest{rows.length === 1 ? "" : "s"} to list
+          </button>
+        ) : (
+          <button onClick={onClose} className="w-full rounded-full border py-4 text-sm font-medium">
+            Close
+          </button>
+        )}
       </div>
     </div>
   );
