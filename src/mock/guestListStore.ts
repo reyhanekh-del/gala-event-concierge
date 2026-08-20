@@ -156,16 +156,35 @@ export function checkDuplicate(eventId: string, phone: string, name = "This gues
   };
 }
 
-export function addGuest(g: Omit<StagedGuest, "id" | "state" | "reviewed">) {
-  const guest: StagedGuest = { ...g, id: `sg_${Math.random().toString(36).slice(2, 9)}`, state: "staged", reviewed: false };
+export function addGuest(
+  g: Omit<StagedGuest, "id" | "state" | "reviewed" | "members" | "groupSize"> & { members?: GroupMember[]; groupSize?: number },
+) {
+  const members = g.members?.length ? g.members : [makeMember(g.contactName)];
+  const guest: StagedGuest = {
+    ...g,
+    members,
+    groupSize: members.length,
+    id: `sg_${Math.random().toString(36).slice(2, 9)}`,
+    state: "staged",
+    reviewed: false,
+  };
   staged = [guest, ...staged];
   notify();
   return guest;
 }
 
 export function updateGuest(id: string, patch: Partial<StagedGuest>) {
-  staged = staged.map((g) => (g.id === id ? { ...g, ...patch } : g));
+  staged = staged.map((g) =>
+    g.id === id ? { ...g, ...patch, groupSize: (patch.members ?? g.members).length } : g,
+  );
   notify();
+}
+
+/** Rename one named member of a group invitation. */
+export function updateMember(guestId: string, memberId: string, name: string) {
+  const g = staged.find((x) => x.id === guestId);
+  if (!g) return;
+  updateGuest(guestId, { members: g.members.map((m) => (m.id === memberId ? { ...m, name } : m)) });
 }
 
 export function removeGuest(id: string) {
