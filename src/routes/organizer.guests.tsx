@@ -17,7 +17,7 @@ import {
   type StagedGuest,
 } from "@/mock/guestListStore";
 import { toast } from "sonner";
-import { BookUser, Plus, Search, Trash2, Users, X } from "lucide-react";
+import { AlertTriangle, BookUser, Download, FileUp, Plus, Search, Trash2, Users, X } from "lucide-react";
 
 export const Route = createFileRoute("/organizer/guests")({
   component: GuestList,
