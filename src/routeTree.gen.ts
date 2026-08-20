@@ -30,6 +30,7 @@ import { Route as OrganizerRsvpRouteImport } from './routes/organizer.rsvp'
 import { Route as OrganizerProfileSetupRouteImport } from './routes/organizer.profile-setup'
 import { Route as OrganizerNotificationsRouteImport } from './routes/organizer.notifications'
 import { Route as OrganizerLoginRouteImport } from './routes/organizer.login'
+import { Route as OrganizerGuestsRouteImport } from './routes/organizer.guests'
 import { Route as OrganizerDashboardRouteImport } from './routes/organizer.dashboard'
 import { Route as AdminVenuesRouteImport } from './routes/admin.venues'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -170,6 +171,11 @@ const OrganizerNotificationsRoute = OrganizerNotificationsRouteImport.update({
 const OrganizerLoginRoute = OrganizerLoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerGuestsRoute = OrganizerGuestsRouteImport.update({
+  id: '/guests',
+  path: '/guests',
   getParentRoute: () => OrganizerRoute,
 } as any)
 const OrganizerDashboardRoute = OrganizerDashboardRouteImport.update({
@@ -371,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/admin/venues': typeof AdminVenuesRouteWithChildren
   '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/guests': typeof OrganizerGuestsRoute
   '/organizer/login': typeof OrganizerLoginRoute
   '/organizer/notifications': typeof OrganizerNotificationsRoute
   '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
@@ -424,6 +431,7 @@ export interface FileRoutesByTo {
   '/admin/support': typeof AdminSupportRoute
   '/admin/users': typeof AdminUsersRoute
   '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/guests': typeof OrganizerGuestsRoute
   '/organizer/login': typeof OrganizerLoginRoute
   '/organizer/notifications': typeof OrganizerNotificationsRoute
   '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
@@ -484,6 +492,7 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/admin/venues': typeof AdminVenuesRouteWithChildren
   '/organizer/dashboard': typeof OrganizerDashboardRoute
+  '/organizer/guests': typeof OrganizerGuestsRoute
   '/organizer/login': typeof OrganizerLoginRoute
   '/organizer/notifications': typeof OrganizerNotificationsRoute
   '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
@@ -545,6 +554,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/venues'
     | '/organizer/dashboard'
+    | '/organizer/guests'
     | '/organizer/login'
     | '/organizer/notifications'
     | '/organizer/profile-setup'
@@ -598,6 +608,7 @@ export interface FileRouteTypes {
     | '/admin/support'
     | '/admin/users'
     | '/organizer/dashboard'
+    | '/organizer/guests'
     | '/organizer/login'
     | '/organizer/notifications'
     | '/organizer/profile-setup'
@@ -657,6 +668,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/venues'
     | '/organizer/dashboard'
+    | '/organizer/guests'
     | '/organizer/login'
     | '/organizer/notifications'
     | '/organizer/profile-setup'
@@ -860,6 +872,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/organizer/login'
       preLoaderRoute: typeof OrganizerLoginRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/guests': {
+      id: '/organizer/guests'
+      path: '/guests'
+      fullPath: '/organizer/guests'
+      preLoaderRoute: typeof OrganizerGuestsRouteImport
       parentRoute: typeof OrganizerRoute
     }
     '/organizer/dashboard': {
@@ -1175,6 +1194,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface OrganizerRouteChildren {
   OrganizerDashboardRoute: typeof OrganizerDashboardRoute
+  OrganizerGuestsRoute: typeof OrganizerGuestsRoute
   OrganizerLoginRoute: typeof OrganizerLoginRoute
   OrganizerNotificationsRoute: typeof OrganizerNotificationsRoute
   OrganizerProfileSetupRoute: typeof OrganizerProfileSetupRoute
@@ -1201,6 +1221,7 @@ interface OrganizerRouteChildren {
 
 const OrganizerRouteChildren: OrganizerRouteChildren = {
   OrganizerDashboardRoute: OrganizerDashboardRoute,
+  OrganizerGuestsRoute: OrganizerGuestsRoute,
   OrganizerLoginRoute: OrganizerLoginRoute,
   OrganizerNotificationsRoute: OrganizerNotificationsRoute,
   OrganizerProfileSetupRoute: OrganizerProfileSetupRoute,
