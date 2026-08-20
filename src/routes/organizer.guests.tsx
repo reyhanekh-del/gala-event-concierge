@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/gala/MobileShell";
 import { organizerTabs } from "@/components/gala/organizerTabs";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { CSV_TEMPLATE, parseGuestCsv, type CsvError, type CsvRow } from "@/lib/csvGuests";
 import { events } from "@/mock/data";
 import {
   MAIN_ORGANIZER_ID,
