@@ -18,7 +18,7 @@ import {
   type StagedGuest,
 } from "@/mock/guestListStore";
 import { toast } from "sonner";
-import { AlertTriangle, BookUser, Download, FileUp, Plus, Search, Trash2, Users, X } from "lucide-react";
+import { AlertTriangle, BookUser, Download, FileUp, Plus, Search, Trash2, UserPlus, Users, X } from "lucide-react";
 
 export const Route = createFileRoute("/organizer/guests")({
   component: GuestList,
@@ -253,9 +253,16 @@ function GuestList() {
               </div>
               <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-widest ${STATE_STYLE[g.state]}`}>{g.state}</span>
             </div>
+            {g.groupSize > 1 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {g.members.map((m) => (
+                  <span key={m.id} className="rounded-full border px-2.5 py-1 text-[11px]">{m.name || "Unnamed"}</span>
+                ))}
+              </div>
+            )}
             <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
-                <Users className="h-3.5 w-3.5" /> {g.groupSize > 1 ? `Group of ${g.groupSize}` : "Individual"}
+                <Users className="h-3.5 w-3.5" /> {g.groupSize > 1 ? `Group of ${g.groupSize} · separate RSVPs` : "Individual"}
                 {viewerId === MAIN_ORGANIZER_ID && <span className="ms-2">· by {inviters.find((i) => i.id === g.inviterId)?.name ?? g.inviterId}</span>}
               </span>
               {g.state === "staged" && (
