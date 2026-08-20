@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/gala/MobileShell";
 import { organizerTabs } from "@/components/gala/organizerTabs";
-import { UserPlus, Users, BookUser, Edit3, History } from "lucide-react";
+import { UserPlus, Users, BookUser, Edit3, History, ListChecks, Send } from "lucide-react";
 
 export const Route = createFileRoute("/organizer/invite/")({
   component: InviteHub,
@@ -9,6 +9,8 @@ export const Route = createFileRoute("/organizer/invite/")({
 
 function InviteHub() {
   const items = [
+    { to: "/organizer/guests", icon: ListChecks, label: "Guest list", desc: "Stage and validate guests before sending" },
+    { to: "/organizer/send", icon: Send, label: "Prepare invitations", desc: "Format, language, recipients, name review" },
     { to: "/organizer/invite/single", icon: UserPlus, label: "Single invite", desc: "Invite one guest" },
     { to: "/organizer/invite/group", icon: Users, label: "Group invite", desc: "Primary + additional guests" },
     { to: "/organizer/invite/contacts", icon: BookUser, label: "From contacts", desc: "Pick from your address book" },
@@ -18,7 +20,7 @@ function InviteHub() {
   return (
     <MobileShell tabs={organizerTabs} title="Invite guests">
       <div className="px-5 pt-2 pb-6">
-        <p className="text-sm text-muted-foreground">Choose how you'd like to invite.</p>
+        <p className="text-sm text-muted-foreground">Build your guest list first, then prepare an invitation batch.</p>
       </div>
       <div className="px-5 space-y-3">
         {items.map((i) => {

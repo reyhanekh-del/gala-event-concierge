@@ -26,6 +26,7 @@ import { Route as OrganizerVerifyRouteImport } from './routes/organizer.verify'
 import { Route as OrganizerTransactionsRouteImport } from './routes/organizer.transactions'
 import { Route as OrganizerSplashRouteImport } from './routes/organizer.splash'
 import { Route as OrganizerSettingsRouteImport } from './routes/organizer.settings'
+import { Route as OrganizerSendRouteImport } from './routes/organizer.send'
 import { Route as OrganizerRsvpRouteImport } from './routes/organizer.rsvp'
 import { Route as OrganizerProfileSetupRouteImport } from './routes/organizer.profile-setup'
 import { Route as OrganizerNotificationsRouteImport } from './routes/organizer.notifications'
@@ -151,6 +152,11 @@ const OrganizerSplashRoute = OrganizerSplashRouteImport.update({
 const OrganizerSettingsRoute = OrganizerSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => OrganizerRoute,
+} as any)
+const OrganizerSendRoute = OrganizerSendRouteImport.update({
+  id: '/send',
+  path: '/send',
   getParentRoute: () => OrganizerRoute,
 } as any)
 const OrganizerRsvpRoute = OrganizerRsvpRouteImport.update({
@@ -382,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/organizer/notifications': typeof OrganizerNotificationsRoute
   '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
   '/organizer/rsvp': typeof OrganizerRsvpRoute
+  '/organizer/send': typeof OrganizerSendRoute
   '/organizer/settings': typeof OrganizerSettingsRoute
   '/organizer/splash': typeof OrganizerSplashRoute
   '/organizer/transactions': typeof OrganizerTransactionsRoute
@@ -436,6 +443,7 @@ export interface FileRoutesByTo {
   '/organizer/notifications': typeof OrganizerNotificationsRoute
   '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
   '/organizer/rsvp': typeof OrganizerRsvpRoute
+  '/organizer/send': typeof OrganizerSendRoute
   '/organizer/settings': typeof OrganizerSettingsRoute
   '/organizer/splash': typeof OrganizerSplashRoute
   '/organizer/transactions': typeof OrganizerTransactionsRoute
@@ -497,6 +505,7 @@ export interface FileRoutesById {
   '/organizer/notifications': typeof OrganizerNotificationsRoute
   '/organizer/profile-setup': typeof OrganizerProfileSetupRoute
   '/organizer/rsvp': typeof OrganizerRsvpRoute
+  '/organizer/send': typeof OrganizerSendRoute
   '/organizer/settings': typeof OrganizerSettingsRoute
   '/organizer/splash': typeof OrganizerSplashRoute
   '/organizer/transactions': typeof OrganizerTransactionsRoute
@@ -559,6 +568,7 @@ export interface FileRouteTypes {
     | '/organizer/notifications'
     | '/organizer/profile-setup'
     | '/organizer/rsvp'
+    | '/organizer/send'
     | '/organizer/settings'
     | '/organizer/splash'
     | '/organizer/transactions'
@@ -613,6 +623,7 @@ export interface FileRouteTypes {
     | '/organizer/notifications'
     | '/organizer/profile-setup'
     | '/organizer/rsvp'
+    | '/organizer/send'
     | '/organizer/settings'
     | '/organizer/splash'
     | '/organizer/transactions'
@@ -673,6 +684,7 @@ export interface FileRouteTypes {
     | '/organizer/notifications'
     | '/organizer/profile-setup'
     | '/organizer/rsvp'
+    | '/organizer/send'
     | '/organizer/settings'
     | '/organizer/splash'
     | '/organizer/transactions'
@@ -844,6 +856,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/organizer/settings'
       preLoaderRoute: typeof OrganizerSettingsRouteImport
+      parentRoute: typeof OrganizerRoute
+    }
+    '/organizer/send': {
+      id: '/organizer/send'
+      path: '/send'
+      fullPath: '/organizer/send'
+      preLoaderRoute: typeof OrganizerSendRouteImport
       parentRoute: typeof OrganizerRoute
     }
     '/organizer/rsvp': {
@@ -1199,6 +1218,7 @@ interface OrganizerRouteChildren {
   OrganizerNotificationsRoute: typeof OrganizerNotificationsRoute
   OrganizerProfileSetupRoute: typeof OrganizerProfileSetupRoute
   OrganizerRsvpRoute: typeof OrganizerRsvpRoute
+  OrganizerSendRoute: typeof OrganizerSendRoute
   OrganizerSettingsRoute: typeof OrganizerSettingsRoute
   OrganizerSplashRoute: typeof OrganizerSplashRoute
   OrganizerTransactionsRoute: typeof OrganizerTransactionsRoute
@@ -1226,6 +1246,7 @@ const OrganizerRouteChildren: OrganizerRouteChildren = {
   OrganizerNotificationsRoute: OrganizerNotificationsRoute,
   OrganizerProfileSetupRoute: OrganizerProfileSetupRoute,
   OrganizerRsvpRoute: OrganizerRsvpRoute,
+  OrganizerSendRoute: OrganizerSendRoute,
   OrganizerSettingsRoute: OrganizerSettingsRoute,
   OrganizerSplashRoute: OrganizerSplashRoute,
   OrganizerTransactionsRoute: OrganizerTransactionsRoute,
