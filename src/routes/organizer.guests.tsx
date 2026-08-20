@@ -93,6 +93,56 @@ function GuestList() {
     toast.success(`${name} staged`);
   };
 
+  const onFile = async (file: File | null | undefined) => {
+    if (!file) return;
+    if (!/\.(csv|txt)$/i.test(file.name)) {
+      toast.error("Please choose a .csv file");
+      return;
+    }
+    if (file.size > 1_000_000) {
+      toast.error("File is too large (max 1 MB)");
+      return;
+    }
+    const text = await file.text();
+    const parsed = parseGuestCsv(text);
+    if (!parsed.total) {
+      toast.error("No guest rows found in this file");
+      return;
+    }
+    setCsv({ fileName: file.name, ...parsed });
+  };
+
+  const importCsv = () => {
+    if (!csv) return;
+    let added = 0;
+    const skipped: CsvError[] = [];
+    csv.rows.forEach((r) => {
+      const dupe = checkDuplicate(eventId, r.phone, r.name);
+      if (dupe.kind === "ok" || dupe.kind === "confirm") {
+        addGuest({ eventId, inviterId: viewerId, contactName: r.name, phone: r.phone, groupSize: r.groupSize });
+        added++;
+      } else {
+        skipped.push({ line: r.line, raw: `${r.name}, ${r.phone}`, reason: dupe.message });
+      }
+    });
+    setCsv(null);
+    if (skipped.length) {
+      setCsv({ fileName: "Skipped rows", rows: [], errors: skipped, total: skipped.length });
+    }
+    toast[added ? "success" : "error"](
+      added ? `Imported ${added} guest${added === 1 ? "" : "s"}${skipped.length ? ` · ${skipped.length} skipped` : ""}` : "No guests imported",
+    );
+  };
+
+  const downloadTemplate = () => {
+    const url = URL.createObjectURL(new Blob([CSV_TEMPLATE], { type: "text/csv" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "gala-guest-list-template.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <MobileShell
       tabs={organizerTabs}
