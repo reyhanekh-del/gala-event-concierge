@@ -56,6 +56,8 @@ function GuestList() {
   const [viewerId, setViewerId] = useState(MAIN_ORGANIZER_ID);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const [csv, setCsv] = useState<{ fileName: string; rows: CsvRow[]; errors: CsvError[]; total: number } | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const all = useGuestList();
 
   const inviters = invitersForEvent(eventId);
