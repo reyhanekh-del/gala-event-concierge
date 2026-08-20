@@ -54,10 +54,8 @@ import { Route as VenueEventsIdRouteImport } from './routes/venue.events.$id'
 import { Route as VenueCreditsBuyRouteImport } from './routes/venue.credits.buy'
 import { Route as ScannerResultStateRouteImport } from './routes/scanner.result.$state'
 import { Route as OrganizerInviteSingleRouteImport } from './routes/organizer.invite.single'
-import { Route as OrganizerInviteManualRouteImport } from './routes/organizer.invite.manual'
 import { Route as OrganizerInviteHistoryRouteImport } from './routes/organizer.invite.history'
 import { Route as OrganizerInviteGroupRouteImport } from './routes/organizer.invite.group'
-import { Route as OrganizerInviteContactsRouteImport } from './routes/organizer.invite.contacts'
 import { Route as OrganizerEventsNewRouteImport } from './routes/organizer.events.new'
 import { Route as OrganizerEventsIdRouteImport } from './routes/organizer.events.$id'
 import { Route as OrganizerDelegationAllocateRouteImport } from './routes/organizer.delegation.allocate'
@@ -295,11 +293,6 @@ const OrganizerInviteSingleRoute = OrganizerInviteSingleRouteImport.update({
   path: '/invite/single',
   getParentRoute: () => OrganizerRoute,
 } as any)
-const OrganizerInviteManualRoute = OrganizerInviteManualRouteImport.update({
-  id: '/invite/manual',
-  path: '/invite/manual',
-  getParentRoute: () => OrganizerRoute,
-} as any)
 const OrganizerInviteHistoryRoute = OrganizerInviteHistoryRouteImport.update({
   id: '/invite/history',
   path: '/invite/history',
@@ -308,11 +301,6 @@ const OrganizerInviteHistoryRoute = OrganizerInviteHistoryRouteImport.update({
 const OrganizerInviteGroupRoute = OrganizerInviteGroupRouteImport.update({
   id: '/invite/group',
   path: '/invite/group',
-  getParentRoute: () => OrganizerRoute,
-} as any)
-const OrganizerInviteContactsRoute = OrganizerInviteContactsRouteImport.update({
-  id: '/invite/contacts',
-  path: '/invite/contacts',
   getParentRoute: () => OrganizerRoute,
 } as any)
 const OrganizerEventsNewRoute = OrganizerEventsNewRouteImport.update({
@@ -410,10 +398,8 @@ export interface FileRoutesByFullPath {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
-  '/organizer/invite/contacts': typeof OrganizerInviteContactsRoute
   '/organizer/invite/group': typeof OrganizerInviteGroupRoute
   '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
-  '/organizer/invite/manual': typeof OrganizerInviteManualRoute
   '/organizer/invite/single': typeof OrganizerInviteSingleRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
@@ -465,10 +451,8 @@ export interface FileRoutesByTo {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
-  '/organizer/invite/contacts': typeof OrganizerInviteContactsRoute
   '/organizer/invite/group': typeof OrganizerInviteGroupRoute
   '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
-  '/organizer/invite/manual': typeof OrganizerInviteManualRoute
   '/organizer/invite/single': typeof OrganizerInviteSingleRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
@@ -527,10 +511,8 @@ export interface FileRoutesById {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
-  '/organizer/invite/contacts': typeof OrganizerInviteContactsRoute
   '/organizer/invite/group': typeof OrganizerInviteGroupRoute
   '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
-  '/organizer/invite/manual': typeof OrganizerInviteManualRoute
   '/organizer/invite/single': typeof OrganizerInviteSingleRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
@@ -590,10 +572,8 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
-    | '/organizer/invite/contacts'
     | '/organizer/invite/group'
     | '/organizer/invite/history'
-    | '/organizer/invite/manual'
     | '/organizer/invite/single'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
@@ -645,10 +625,8 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
-    | '/organizer/invite/contacts'
     | '/organizer/invite/group'
     | '/organizer/invite/history'
-    | '/organizer/invite/manual'
     | '/organizer/invite/single'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
@@ -706,10 +684,8 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
-    | '/organizer/invite/contacts'
     | '/organizer/invite/group'
     | '/organizer/invite/history'
-    | '/organizer/invite/manual'
     | '/organizer/invite/single'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
@@ -1054,13 +1030,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizerInviteSingleRouteImport
       parentRoute: typeof OrganizerRoute
     }
-    '/organizer/invite/manual': {
-      id: '/organizer/invite/manual'
-      path: '/invite/manual'
-      fullPath: '/organizer/invite/manual'
-      preLoaderRoute: typeof OrganizerInviteManualRouteImport
-      parentRoute: typeof OrganizerRoute
-    }
     '/organizer/invite/history': {
       id: '/organizer/invite/history'
       path: '/invite/history'
@@ -1073,13 +1042,6 @@ declare module '@tanstack/react-router' {
       path: '/invite/group'
       fullPath: '/organizer/invite/group'
       preLoaderRoute: typeof OrganizerInviteGroupRouteImport
-      parentRoute: typeof OrganizerRoute
-    }
-    '/organizer/invite/contacts': {
-      id: '/organizer/invite/contacts'
-      path: '/invite/contacts'
-      fullPath: '/organizer/invite/contacts'
-      preLoaderRoute: typeof OrganizerInviteContactsRouteImport
       parentRoute: typeof OrganizerRoute
     }
     '/organizer/events/new': {
@@ -1229,10 +1191,8 @@ interface OrganizerRouteChildren {
   OrganizerDelegationAllocateRoute: typeof OrganizerDelegationAllocateRoute
   OrganizerEventsIdRoute: typeof OrganizerEventsIdRoute
   OrganizerEventsNewRoute: typeof OrganizerEventsNewRoute
-  OrganizerInviteContactsRoute: typeof OrganizerInviteContactsRoute
   OrganizerInviteGroupRoute: typeof OrganizerInviteGroupRoute
   OrganizerInviteHistoryRoute: typeof OrganizerInviteHistoryRoute
-  OrganizerInviteManualRoute: typeof OrganizerInviteManualRoute
   OrganizerInviteSingleRoute: typeof OrganizerInviteSingleRoute
   OrganizerDelegationIndexRoute: typeof OrganizerDelegationIndexRoute
   OrganizerEventsIndexRoute: typeof OrganizerEventsIndexRoute
@@ -1257,10 +1217,8 @@ const OrganizerRouteChildren: OrganizerRouteChildren = {
   OrganizerDelegationAllocateRoute: OrganizerDelegationAllocateRoute,
   OrganizerEventsIdRoute: OrganizerEventsIdRoute,
   OrganizerEventsNewRoute: OrganizerEventsNewRoute,
-  OrganizerInviteContactsRoute: OrganizerInviteContactsRoute,
   OrganizerInviteGroupRoute: OrganizerInviteGroupRoute,
   OrganizerInviteHistoryRoute: OrganizerInviteHistoryRoute,
-  OrganizerInviteManualRoute: OrganizerInviteManualRoute,
   OrganizerInviteSingleRoute: OrganizerInviteSingleRoute,
   OrganizerDelegationIndexRoute: OrganizerDelegationIndexRoute,
   OrganizerEventsIndexRoute: OrganizerEventsIndexRoute,
