@@ -12,6 +12,8 @@ export type StagedGuest = {
   displayName?: string; // invitation display name (reviewed)
   reviewed: boolean;
   phone: string;
+  /** Named party members who RSVP separately. Index 0 is the phone owner (primary contact). */
+  members: GroupMember[];
   groupSize: number;
   state: InviteState;
   invitedAt?: string;
