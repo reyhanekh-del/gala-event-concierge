@@ -176,7 +176,7 @@ function Landing() {
   const c = COPY[locale];
 
   const shotImages = [organizerShot, inviteShot, venueShot, scannerShot];
-  const shotLinks = ["/organizer/dashboard", "/invite/g_e_wedding_0", "/venue", "/scanner/scan"] as const;
+  const shotLinks = ["/organizer/dashboard", "/invite/g_e_wedding_0", "/venue", "/scanner/scan"] as unknown as ["/", "/", "/", "/"];
 
   return (
     <div className="min-h-screen bg-background bg-noise">
