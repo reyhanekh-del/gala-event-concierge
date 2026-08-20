@@ -4,6 +4,14 @@ import { coInviters, guests as seedGuests, eventById } from "./data";
 
 export type InviteState = "staged" | "sent" | "expired" | "accepted" | "rejected" | "cancelled";
 
+/** One named person inside a group invitation. Each member RSVPs separately. */
+export type GroupMember = { id: string; name: string };
+
+export const makeMember = (name: string): GroupMember => ({
+  id: `m_${Math.random().toString(36).slice(2, 9)}`,
+  name: name.trim(),
+});
+
 export type StagedGuest = {
   id: string;
   eventId: string;
