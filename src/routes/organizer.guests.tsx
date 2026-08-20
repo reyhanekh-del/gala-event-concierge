@@ -7,6 +7,7 @@ import { events } from "@/mock/data";
 import {
   MAIN_ORGANIZER_ID,
   addGuest,
+  makeMember,
   checkDuplicate,
   invitersForEvent,
   remainingAllowance,
@@ -122,7 +123,13 @@ function GuestList() {
     csv.rows.forEach((r) => {
       const dupe = checkDuplicate(eventId, r.phone, r.name);
       if (dupe.kind === "ok" || dupe.kind === "confirm") {
-        addGuest({ eventId, inviterId: viewerId, contactName: r.name, phone: r.phone, groupSize: r.groupSize });
+        addGuest({
+          eventId,
+          inviterId: viewerId,
+          contactName: r.name,
+          phone: r.phone,
+          members: Array.from({ length: r.groupSize }, (_, k) => makeMember(k === 0 ? r.name : `Guest ${k + 1}`)),
+        });
         added++;
       } else {
         skipped.push({ line: r.line, raw: `${r.name}, ${r.phone}`, reason: dupe.message });
@@ -195,7 +202,7 @@ function GuestList() {
               let added = 0;
               CONTACTS.forEach(([n, p]) => {
                 if (checkDuplicate(eventId, p, n).kind === "ok") {
-                  addGuest({ eventId, inviterId: viewerId, contactName: n, phone: p, groupSize: 1 });
+                  addGuest({ eventId, inviterId: viewerId, contactName: n, phone: p, members: [makeMember(n)] });
                   added++;
                 }
               });
