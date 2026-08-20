@@ -4,6 +4,14 @@ import { coInviters, guests as seedGuests, eventById } from "./data";
 
 export type InviteState = "staged" | "sent" | "expired" | "accepted" | "rejected" | "cancelled";
 
+/** One named person inside a group invitation. Each member RSVPs separately. */
+export type GroupMember = { id: string; name: string };
+
+export const makeMember = (name: string): GroupMember => ({
+  id: `m_${Math.random().toString(36).slice(2, 9)}`,
+  name: name.trim(),
+});
+
 export type StagedGuest = {
   id: string;
   eventId: string;
@@ -12,6 +20,8 @@ export type StagedGuest = {
   displayName?: string; // invitation display name (reviewed)
   reviewed: boolean;
   phone: string;
+  /** Named party members who RSVP separately. Index 0 is the phone owner (primary contact). */
+  members: GroupMember[];
   groupSize: number;
   state: InviteState;
   invitedAt?: string;
@@ -70,6 +80,7 @@ let staged: StagedGuest[] = seedGuests.slice(0, 40).map((g, i) => {
     displayName: undefined,
     reviewed: false,
     phone: g.phone,
+    members: Array.from({ length: g.groupSize ?? 1 }, (_, k) => makeMember(k === 0 ? g.name : `Guest ${k + 1}`)),
     groupSize: g.groupSize ?? 1,
     state,
     invitedAt: g.invitedAt,
@@ -145,16 +156,35 @@ export function checkDuplicate(eventId: string, phone: string, name = "This gues
   };
 }
 
-export function addGuest(g: Omit<StagedGuest, "id" | "state" | "reviewed">) {
-  const guest: StagedGuest = { ...g, id: `sg_${Math.random().toString(36).slice(2, 9)}`, state: "staged", reviewed: false };
+export function addGuest(
+  g: Omit<StagedGuest, "id" | "state" | "reviewed" | "members" | "groupSize"> & { members?: GroupMember[]; groupSize?: number },
+) {
+  const members = g.members?.length ? g.members : [makeMember(g.contactName)];
+  const guest: StagedGuest = {
+    ...g,
+    members,
+    groupSize: members.length,
+    id: `sg_${Math.random().toString(36).slice(2, 9)}`,
+    state: "staged",
+    reviewed: false,
+  };
   staged = [guest, ...staged];
   notify();
   return guest;
 }
 
 export function updateGuest(id: string, patch: Partial<StagedGuest>) {
-  staged = staged.map((g) => (g.id === id ? { ...g, ...patch } : g));
+  staged = staged.map((g) =>
+    g.id === id ? { ...g, ...patch, groupSize: (patch.members ?? g.members).length } : g,
+  );
   notify();
+}
+
+/** Rename one named member of a group invitation. */
+export function updateMember(guestId: string, memberId: string, name: string) {
+  const g = staged.find((x) => x.id === guestId);
+  if (!g) return;
+  updateGuest(guestId, { members: g.members.map((m) => (m.id === memberId ? { ...m, name } : m)) });
 }
 
 export function removeGuest(id: string) {
@@ -196,4 +226,9 @@ export function remainingAllowance(eventId: string, inviterId: string) {
   const co = coInviters.find((c) => c.id === inviterId);
   const used = staged.filter((g) => g.eventId === eventId && g.inviterId === inviterId && g.state !== "staged").length;
   return { allocated: co?.allocated ?? 0, used, remaining: (co?.allocated ?? 0) - used };
+}
+
+/** Look up a staged guest (used by the invitee page to read named group members). */
+export function stagedById(id: string) {
+  return staged.find((g) => g.id === id || g.id === `sg_${id}`);
 }

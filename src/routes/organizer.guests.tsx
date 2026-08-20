@@ -7,6 +7,7 @@ import { events } from "@/mock/data";
 import {
   MAIN_ORGANIZER_ID,
   addGuest,
+  makeMember,
   checkDuplicate,
   invitersForEvent,
   remainingAllowance,
@@ -17,7 +18,7 @@ import {
   type StagedGuest,
 } from "@/mock/guestListStore";
 import { toast } from "sonner";
-import { AlertTriangle, BookUser, Download, FileUp, Plus, Search, Trash2, Users, X } from "lucide-react";
+import { AlertTriangle, BookUser, Download, FileUp, Plus, Search, Trash2, UserPlus, Users, X } from "lucide-react";
 
 export const Route = createFileRoute("/organizer/guests")({
   component: GuestList,
@@ -71,26 +72,29 @@ function GuestList() {
   const stagedCount = list.filter((g) => g.state === "staged").length;
   const allowance = remainingAllowance(eventId, viewerId);
 
-  const tryAdd = (name: string, phone: string, groupSize = 1) => {
+  const tryAdd = (name: string, phone: string, extraNames: string[] = []) => {
     if (!name.trim()) return toast.error("Guest name is required");
     if (!validatePhone(phone)) return toast.error("Enter a valid international phone number, e.g. +96650…");
+    const names = [name.trim(), ...extraNames.map((n) => n.trim()).filter(Boolean)];
+    const members = names.map(makeMember);
     const dupe = checkDuplicate(eventId, phone, name);
     if (dupe.kind === "blocked") return toast.error(dupe.message);
+    const commit = () => addGuest({ eventId, inviterId: viewerId, contactName: name.trim(), phone, members });
     if (dupe.kind === "confirm") {
       toast(dupe.message, {
         duration: 12000,
         action: {
           label: "Add & resend",
           onClick: () => {
-            addGuest({ eventId, inviterId: viewerId, contactName: name.trim(), phone, groupSize });
+            commit();
             toast.success(`${name} added to the staged guest list`);
           },
         },
       });
       return;
     }
-    addGuest({ eventId, inviterId: viewerId, contactName: name.trim(), phone, groupSize });
-    toast.success(`${name} staged`);
+    commit();
+    toast.success(members.length > 1 ? `${name} + ${members.length - 1} named guests staged` : `${name} staged`);
   };
 
   const onFile = async (file: File | null | undefined) => {
@@ -119,7 +123,13 @@ function GuestList() {
     csv.rows.forEach((r) => {
       const dupe = checkDuplicate(eventId, r.phone, r.name);
       if (dupe.kind === "ok" || dupe.kind === "confirm") {
-        addGuest({ eventId, inviterId: viewerId, contactName: r.name, phone: r.phone, groupSize: r.groupSize });
+        addGuest({
+          eventId,
+          inviterId: viewerId,
+          contactName: r.name,
+          phone: r.phone,
+          members: Array.from({ length: r.groupSize }, (_, k) => makeMember(k === 0 ? r.name : `Guest ${k + 1}`)),
+        });
         added++;
       } else {
         skipped.push({ line: r.line, raw: `${r.name}, ${r.phone}`, reason: dupe.message });
@@ -192,7 +202,7 @@ function GuestList() {
               let added = 0;
               CONTACTS.forEach(([n, p]) => {
                 if (checkDuplicate(eventId, p, n).kind === "ok") {
-                  addGuest({ eventId, inviterId: viewerId, contactName: n, phone: p, groupSize: 1 });
+                  addGuest({ eventId, inviterId: viewerId, contactName: n, phone: p, members: [makeMember(n)] });
                   added++;
                 }
               });
@@ -243,9 +253,16 @@ function GuestList() {
               </div>
               <span className={`rounded-full px-2.5 py-1 text-[10px] uppercase tracking-widest ${STATE_STYLE[g.state]}`}>{g.state}</span>
             </div>
+            {g.groupSize > 1 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {g.members.map((m) => (
+                  <span key={m.id} className="rounded-full border px-2.5 py-1 text-[11px]">{m.name || "Unnamed"}</span>
+                ))}
+              </div>
+            )}
             <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
-                <Users className="h-3.5 w-3.5" /> {g.groupSize > 1 ? `Group of ${g.groupSize}` : "Individual"}
+                <Users className="h-3.5 w-3.5" /> {g.groupSize > 1 ? `Group of ${g.groupSize} · separate RSVPs` : "Individual"}
                 {viewerId === MAIN_ORGANIZER_ID && <span className="ms-2">· by {inviters.find((i) => i.id === g.inviterId)?.name ?? g.inviterId}</span>}
               </span>
               {g.state === "staged" && (
@@ -283,33 +300,54 @@ function GuestList() {
   );
 }
 
-function AddSheet({ onClose, onAdd }: { onClose: () => void; onAdd: (n: string, p: string, g: number) => void }) {
+function AddSheet({ onClose, onAdd }: { onClose: () => void; onAdd: (n: string, p: string, extra: string[]) => void }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+966");
-  const [group, setGroup] = useState(1);
+  const [extra, setExtra] = useState<string[]>([]);
   const valid = validatePhone(phone);
+  const reset = () => { setName(""); setPhone("+966"); setExtra([]); };
   return (
     <div className="absolute inset-0 z-50 flex items-end bg-black/40" onClick={onClose}>
-      <div className="w-full rounded-t-3xl bg-background p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-h-[88%] overflow-y-auto rounded-t-3xl bg-background p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <p className="font-medium">Add guest</p>
           <button onClick={onClose} aria-label="Close"><X className="h-4 w-4" /></button>
         </div>
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Contact name" className="w-full rounded-2xl border bg-card px-5 py-3.5 text-sm" />
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Primary guest name" className="w-full rounded-2xl border bg-card px-5 py-3.5 text-sm" />
         <div>
           <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+966 55 000 0000" inputMode="tel" className="w-full rounded-2xl border bg-card px-5 py-3.5 text-sm" />
           {!valid && phone.length > 3 && <p className="mt-1.5 text-xs text-amber-600">Use international format, e.g. +966550000000</p>}
+          <p className="mt-1.5 text-xs text-muted-foreground">The invitation is delivered to this number only.</p>
         </div>
-        <div className="flex items-center justify-between rounded-2xl border bg-card px-5 py-3">
-          <span className="text-sm">Group size</span>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setGroup(Math.max(1, group - 1))} className="h-8 w-8 rounded-full border">−</button>
-            <span className="w-6 text-center text-sm font-medium">{group}</span>
-            <button onClick={() => setGroup(group + 1)} className="h-8 w-8 rounded-full border">+</button>
+
+        <div className="space-y-2 rounded-2xl border bg-card p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium">Others in this group</p>
+            <span className="text-xs text-muted-foreground">{extra.length + 1} named</span>
           </div>
+          <p className="text-xs text-muted-foreground">
+            Each name gets its own RSVP and entry pass inside the same invitation link.
+          </p>
+          {extra.map((v, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input
+                value={v}
+                onChange={(e) => setExtra(extra.map((x, k) => (k === i ? e.target.value : x)))}
+                placeholder={`Guest ${i + 2} name`}
+                className="flex-1 rounded-xl border bg-background px-4 py-2.5 text-sm"
+              />
+              <button onClick={() => setExtra(extra.filter((_, k) => k !== i))} aria-label={`Remove guest ${i + 2}`} className="inline-flex h-9 w-9 items-center justify-center rounded-full border">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
+          <button onClick={() => setExtra([...extra, ""])} className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium">
+            <UserPlus className="h-3.5 w-3.5" /> Add person
+          </button>
         </div>
+
         <button
-          onClick={() => { onAdd(name, phone, group); setName(""); setPhone("+966"); setGroup(1); onClose(); }}
+          onClick={() => { onAdd(name, phone, extra); reset(); onClose(); }}
           className="w-full rounded-full bg-foreground py-4 text-sm font-medium text-background"
         >
           Add to guest list
