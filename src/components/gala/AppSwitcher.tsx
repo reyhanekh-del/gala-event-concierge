@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const APPS = [
   { to: "/organizer", label: "Organizer", icon: Smartphone, match: "/organizer" },
-  { to: "/invite/g_e_wedding_0", label: "Invitee", icon: Mail, match: "/invite" },
+  { to: "/invite/g_e_wedding_0" as "/", label: "Invitee", icon: Mail, match: "/invite" },
   { to: "/venue", label: "Venue", icon: Building2, match: "/venue" },
   { to: "/scanner", label: "Scanner", icon: ScanLine, match: "/scanner" },
   { to: "/admin", label: "Admin", icon: Shield, match: "/admin" },
