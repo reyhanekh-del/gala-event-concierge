@@ -71,26 +71,29 @@ function GuestList() {
   const stagedCount = list.filter((g) => g.state === "staged").length;
   const allowance = remainingAllowance(eventId, viewerId);
 
-  const tryAdd = (name: string, phone: string, groupSize = 1) => {
+  const tryAdd = (name: string, phone: string, extraNames: string[] = []) => {
     if (!name.trim()) return toast.error("Guest name is required");
     if (!validatePhone(phone)) return toast.error("Enter a valid international phone number, e.g. +96650…");
+    const names = [name.trim(), ...extraNames.map((n) => n.trim()).filter(Boolean)];
+    const members = names.map(makeMember);
     const dupe = checkDuplicate(eventId, phone, name);
     if (dupe.kind === "blocked") return toast.error(dupe.message);
+    const commit = () => addGuest({ eventId, inviterId: viewerId, contactName: name.trim(), phone, members });
     if (dupe.kind === "confirm") {
       toast(dupe.message, {
         duration: 12000,
         action: {
           label: "Add & resend",
           onClick: () => {
-            addGuest({ eventId, inviterId: viewerId, contactName: name.trim(), phone, groupSize });
+            commit();
             toast.success(`${name} added to the staged guest list`);
           },
         },
       });
       return;
     }
-    addGuest({ eventId, inviterId: viewerId, contactName: name.trim(), phone, groupSize });
-    toast.success(`${name} staged`);
+    commit();
+    toast.success(members.length > 1 ? `${name} + ${members.length - 1} named guests staged` : `${name} staged`);
   };
 
   const onFile = async (file: File | null | undefined) => {
