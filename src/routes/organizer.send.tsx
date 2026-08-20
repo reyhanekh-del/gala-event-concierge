@@ -83,8 +83,17 @@ function SendFlow() {
 
   const previewGuest = selectedGuests.find((g) => g.id === previewId) ?? selectedGuests[0];
 
+  const partyNames = (g?: StagedGuest) => {
+    const names = (g?.members ?? []).map((m) => m.name.trim()).filter(Boolean);
+    if (names.length > 1) {
+      const sep = lang === "ar" ? " و" : " & ";
+      return names.slice(0, -1).join(lang === "ar" ? "، " : ", ") + sep + names[names.length - 1];
+    }
+    return names[0];
+  };
+
   const message = (g?: StagedGuest) => {
-    const name = g ? (g.displayName || g.contactName) : "—";
+    const name = g ? (partyNames(g) || g.displayName || g.contactName) : "—";
     const when = ev ? dayFmt(ev.date, lang) : "—";
     if (lang === "ar") {
       return format === "wedding"
