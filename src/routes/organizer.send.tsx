@@ -8,6 +8,7 @@ import {
   REMINDER_BEFORE_EXPIRY_HOURS,
   sendBatch,
   updateGuest,
+  updateMember,
   useGuestList,
   visibleGuests,
   type StagedGuest,
@@ -182,7 +183,7 @@ function SendFlow() {
                 >
                   <span className="flex-1 min-w-0">
                     <span className="block text-sm font-medium truncate">{g.contactName}</span>
-                    <span className="block text-xs text-muted-foreground">{g.phone}{g.groupSize > 1 ? ` · group of ${g.groupSize}` : ""}{g.state === "expired" ? " · previous invite expired" : ""}</span>
+                    <span className="block text-xs text-muted-foreground">{g.phone}{g.groupSize > 1 ? ` · group of ${g.groupSize}: ${g.members.map((m) => m.name).join(", ")}` : ""}{g.state === "expired" ? " · previous invite expired" : ""}</span>
                   </span>
                   <span className={`h-5 w-5 rounded-full border flex items-center justify-center ${on ? "bg-foreground border-foreground" : ""}`}>
                     {on && <Check className="h-3 w-3 text-background" />}
@@ -221,6 +222,25 @@ function SendFlow() {
                   dir={lang === "ar" ? "rtl" : "ltr"}
                   className="mt-2 w-full rounded-xl border bg-background px-4 py-2.5 text-sm"
                 />
+                {g.groupSize > 1 && (
+                  <div className="mt-3 space-y-2 rounded-xl bg-muted/60 p-3">
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                      Group of {g.groupSize} · each name RSVPs separately
+                    </p>
+                    {g.members.map((m, i) => (
+                      <div key={m.id} className="flex items-center gap-2">
+                        <span className="w-5 shrink-0 text-xs text-muted-foreground">{i + 1}.</span>
+                        <input
+                          value={m.name}
+                          onChange={(e) => updateMember(g.id, m.id, e.target.value)}
+                          dir={lang === "ar" ? "rtl" : "ltr"}
+                          className="flex-1 rounded-lg border bg-background px-3 py-2 text-sm"
+                        />
+                        {i === 0 && <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Phone</span>}
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <div className="mt-2 flex items-center justify-between text-xs">
                   <button onClick={() => setPreviewId(g.id)} className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
                     Preview this guest <ChevronRight className="h-3 w-3 rtl:rotate-180" />

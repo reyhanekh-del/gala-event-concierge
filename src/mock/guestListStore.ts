@@ -227,3 +227,8 @@ export function remainingAllowance(eventId: string, inviterId: string) {
   const used = staged.filter((g) => g.eventId === eventId && g.inviterId === inviterId && g.state !== "staged").length;
   return { allocated: co?.allocated ?? 0, used, remaining: (co?.allocated ?? 0) - used };
 }
+
+/** Look up a staged guest (used by the invitee page to read named group members). */
+export function stagedById(id: string) {
+  return staged.find((g) => g.id === id || g.id === `sg_${id}`);
+}
