@@ -269,6 +269,16 @@ function GuestList() {
       </div>
 
       {open && <AddSheet onClose={() => setOpen(false)} onAdd={tryAdd} />}
+      {csv && (
+        <CsvSheet
+          fileName={csv.fileName}
+          rows={csv.rows}
+          errors={csv.errors}
+          total={csv.total}
+          onClose={() => setCsv(null)}
+          onImport={importCsv}
+        />
+      )}
     </MobileShell>
   );
 }
