@@ -24,8 +24,10 @@ export type StagedGuest = {
   members: GroupMember[];
   groupSize: number;
   state: InviteState;
+  batchId?: string;
   invitedAt?: string;
   decidedAt?: string;
+  checkedIn?: boolean;
 };
 
 export type SendBatch = {
@@ -34,6 +36,7 @@ export type SendBatch = {
   inviterId: string;
   format: "wedding" | "other";
   language: "en" | "ar";
+  fields: Record<string, string>;
   count: number;
   sentAt: string;
   expiresAt: string;
@@ -43,6 +46,17 @@ export type SendBatch = {
 export const MAIN_ORGANIZER_ID = "o_self";
 export const EXPIRY_HOURS = 72;
 export const REMINDER_BEFORE_EXPIRY_HOURS = 24;
+
+/** Simple, user-facing expiry copy. */
+export function expiryLabel(expiresAt?: string) {
+  if (!expiresAt) return "";
+  const ms = +new Date(expiresAt) - Date.now();
+  if (ms <= 0)
+    return `Expired on ${new Date(expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
+  const h = Math.round(ms / 3600_000);
+  return h >= 24 ? `Expires in ${Math.round(h / 24)} day${h >= 48 ? "s" : ""}` : `Expires in ${h} hour${h === 1 ? "" : "s"}`;
+}
+
 
 export function inviterName(id: string) {
   if (id === MAIN_ORGANIZER_ID) return "You (Organizer)";
