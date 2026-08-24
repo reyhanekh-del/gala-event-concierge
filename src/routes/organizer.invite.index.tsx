@@ -5,123 +5,110 @@ import { useMemo, useState } from "react";
 import { events } from "@/mock/data";
 import {
   MAIN_ORGANIZER_ID,
-  remainingAllowance,
+  cancelInvite,
+  expiryLabel,
+  invitersForEvent,
+  lifecycle,
+  restageGuest,
   useBatches,
   useGuestList,
   visibleGuests,
+  type StagedGuest,
 } from "@/mock/guestListStore";
-import { format } from "date-fns";
-import { ArrowRight, Check, Clock, History, ListChecks, Send, UserPlus, Users } from "lucide-react";
+import { format as fmt } from "date-fns";
+import { Plus, RotateCcw, Send, X } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/organizer/invite/")({
-  component: InviteHub,
+  component: SentInvitations,
   head: () => ({
     meta: [
-      { title: "Invitations | Gala Organizer" },
-      { name: "description", content: "Stage your guest list and send invitation batches for your event." },
-      { property: "og:title", content: "Invitations | Gala Organizer" },
-      { property: "og:description", content: "Stage guests, prepare invitation batches and track what you sent." },
+      { title: "Sent invitations | Gala Organizer" },
+      { name: "description", content: "Track invitation batches and every guest response from sent to checked in." },
+      { property: "og:title", content: "Sent invitations | Gala Organizer" },
+      { property: "og:description", content: "Batch history and RSVP lifecycle for your event invitations." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
 });
 
-function InviteHub() {
+const STATE_LABEL: Record<StagedGuest["state"], string> = {
+  staged: "Ready",
+  sent: "Awaiting reply",
+  expired: "Expired",
+  accepted: "Accepted",
+  rejected: "Declined",
+  cancelled: "Cancelled",
+};
+
+type Tab = "all" | "sent" | "accepted" | "rejected" | "expired";
+
+function SentInvitations() {
   const upcoming = events.filter((e) => e.status === "upcoming");
   const [eventId, setEventId] = useState(upcoming[0]?.id ?? events[0].id);
+  const [viewerId, setViewerId] = useState(MAIN_ORGANIZER_ID);
+  const [tab, setTab] = useState<Tab>("all");
   const all = useGuestList();
   const batches = useBatches();
 
-  const list = useMemo(() => visibleGuests(eventId, MAIN_ORGANIZER_ID, all), [all, eventId]);
-  const staged = list.filter((g) => g.state === "staged").length;
-  const sent = list.filter((g) => g.state !== "staged").length;
-  const accepted = list.filter((g) => g.state === "accepted").length;
-  const allowance = remainingAllowance(eventId, MAIN_ORGANIZER_ID);
-  const eventBatches = batches.filter((b) => b.eventId === eventId).slice(0, 3);
-  const canSend = staged > 0;
+  const inviters = invitersForEvent(eventId);
+  const sent = useMemo(
+    () => visibleGuests(eventId, viewerId, all).filter((g) => g.state !== "staged"),
+    [all, eventId, viewerId],
+  );
+  const stats = lifecycle(sent);
+  const eventBatches = batches.filter((b) => b.eventId === eventId && (viewerId === MAIN_ORGANIZER_ID || b.inviterId === viewerId));
+
+  const list = sent.filter((g) =>
+    tab === "all" ? true : tab === "sent" ? g.state === "sent" : g.state === tab,
+  );
 
   return (
-    <MobileShell tabs={organizerTabs} title="Invitations">
-      <div className="px-5 pt-2 pb-32 space-y-6">
-        <div className="space-y-3">
-          <label htmlFor="invite-event" className="text-xs uppercase tracking-widest text-muted-foreground">
-            Event
-          </label>
+    <MobileShell
+      tabs={organizerTabs}
+      title="Invitations"
+      right={
+        <Link to="/organizer/guests" className="inline-flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted" aria-label="Prepare invitations">
+          <Plus className="h-5 w-5" />
+        </Link>
+      }
+    >
+      <div className="space-y-4 px-5 pt-2 pb-4">
+        <div className="flex gap-2">
           <select
-            id="invite-event"
+            aria-label="Event"
             value={eventId}
             onChange={(e) => setEventId(e.target.value)}
-            className="w-full rounded-2xl border bg-card px-5 py-3.5 text-sm"
+            className="min-w-0 flex-1 truncate rounded-full border bg-card px-4 py-2.5 text-xs"
           >
             {events.map((e) => (
-              <option key={e.id} value={e.id}>
-                {e.name}
-              </option>
+              <option key={e.id} value={e.id}>{e.name}</option>
+            ))}
+          </select>
+          <select
+            aria-label="Viewing as"
+            value={viewerId}
+            onChange={(e) => setViewerId(e.target.value)}
+            className="min-w-0 flex-1 truncate rounded-full border bg-card px-4 py-2.5 text-xs"
+          >
+            {inviters.map((i) => (
+              <option key={i.id} value={i.id}>{i.id === MAIN_ORGANIZER_ID ? "All inviters" : i.name}</option>
             ))}
           </select>
         </div>
 
-        <div className="rounded-2xl bg-foreground text-background p-5">
-          <p className="text-xs uppercase tracking-widest text-background/60">Invite allowance</p>
-          <p className="font-serif text-4xl mt-1">{Math.max(allowance.remaining, 0)} left</p>
-          <p className="text-xs text-background/60 mt-1">
-            {allowance.used} used of {allowance.allocated} allocated
-          </p>
+        <div className="grid grid-cols-4 gap-2">
+          <Stat label="Sent" value={stats.sent} />
+          <Stat label="Accepted" value={stats.accepted} />
+          <Stat label="Declined" value={stats.rejected} />
+          <Stat label="Expired" value={stats.expired} />
         </div>
 
-        <div className="grid grid-cols-3 gap-2">
-          <Stat label="Staged" value={staged} />
-          <Stat label="Sent" value={sent} />
-          <Stat label="Accepted" value={accepted} />
-        </div>
-
-        <section aria-labelledby="flow-heading" className="space-y-3">
-          <h2 id="flow-heading" className="text-xs uppercase tracking-widest text-muted-foreground">
-            How it works
-          </h2>
-
-          <Step
-            n={1}
-            to="/organizer/guests"
-            icon={ListChecks}
-            title="Build your guest list"
-            desc={staged ? `${staged} guest${staged === 1 ? "" : "s"} staged, not yet sent` : "Add guests manually, from contacts or a CSV file"}
-            done={staged > 0 || sent > 0}
-          />
-          <Step
-            n={2}
-            to="/organizer/send"
-            search={{ event: eventId, inviter: MAIN_ORGANIZER_ID }}
-            icon={Send}
-            title="Prepare and send invitations"
-            desc={canSend ? "Choose format, language, recipients and review names" : "Stage at least one guest to continue"}
-            disabled={!canSend}
-          />
-          <Step
-            n={3}
-            to="/organizer/rsvp"
-            icon={Clock}
-            title="Track responses"
-            desc="Invitations expire after 72 hours, with a reminder at 48 hours"
-          />
-        </section>
-
-        <section aria-labelledby="recent-heading" className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 id="recent-heading" className="text-xs uppercase tracking-widest text-muted-foreground">
-              Recent batches
-            </h2>
-            <Link to="/organizer/invite/history" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-              <History className="h-3.5 w-3.5" /> Full history
-            </Link>
-          </div>
-          {eventBatches.length === 0 ? (
-            <p className="rounded-2xl border border-dashed p-4 text-xs text-muted-foreground">
-              No invitation batches sent for this event yet.
-            </p>
-          ) : (
-            eventBatches.map((b) => (
+        {eventBatches.length > 0 && (
+          <section className="space-y-2">
+            <h2 className="text-xs uppercase tracking-widest text-muted-foreground">Batches</h2>
+            {eventBatches.slice(0, 4).map((b) => (
               <div key={b.id} className="rounded-2xl border bg-card p-4">
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-sm font-medium">
@@ -132,35 +119,89 @@ function InviteHub() {
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Sent {format(new Date(b.sentAt), "MMM d, HH:mm")} · expires {format(new Date(b.expiresAt), "MMM d, HH:mm")}
+                  Sent {fmt(new Date(b.sentAt), "MMM d, HH:mm")} · {expiryLabel(b.expiresAt)}
+                  {viewerId === MAIN_ORGANIZER_ID && b.inviterId !== MAIN_ORGANIZER_ID && ` · by ${inviters.find((i) => i.id === b.inviterId)?.name}`}
                 </p>
               </div>
-            ))
-          )}
-        </section>
+            ))}
+          </section>
+        )}
 
-        <section aria-labelledby="quick-heading" className="space-y-3">
-          <h2 id="quick-heading" className="text-xs uppercase tracking-widest text-muted-foreground">
-            Quick actions
-          </h2>
-          <div className="grid grid-cols-2 gap-2">
-            <Quick to="/organizer/invite/single" icon={UserPlus} label="Single invite" />
-            <Quick to="/organizer/invite/group" icon={Users} label="Group invite" />
-          </div>
-        </section>
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {(
+            [
+              ["all", "All"],
+              ["sent", `Awaiting ${stats.pending}`],
+              ["accepted", `Accepted ${stats.accepted}`],
+              ["rejected", `Declined ${stats.rejected}`],
+              ["expired", `Expired ${stats.expired}`],
+            ] as [Tab, string][]
+          ).map(([k, label]) => (
+            <button
+              key={k}
+              onClick={() => setTab(k)}
+              className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium ${tab === k ? "border-foreground bg-foreground text-background" : "text-muted-foreground"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="absolute bottom-20 inset-x-0 px-5">
+      <div className="space-y-2 px-5 pb-32">
+        {list.length === 0 && (
+          <div className="rounded-2xl border border-dashed p-8 text-center">
+            <p className="text-sm text-muted-foreground">No invitations here yet.</p>
+            <Link to="/organizer/guests" className="mt-3 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background">
+              <Send className="h-3.5 w-3.5" /> Prepare invitations
+            </Link>
+          </div>
+        )}
+        {list.map((g) => {
+          const batch = batches.find((b) => b.id === g.batchId);
+          return (
+            <div key={g.id} className="rounded-2xl border bg-card p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{g.displayName || g.contactName}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {g.phone}{g.groupSize > 1 && ` · group of ${g.groupSize}`}
+                  </p>
+                </div>
+                <span className="shrink-0 text-[10px] uppercase tracking-widest text-muted-foreground">{STATE_LABEL[g.state]}</span>
+              </div>
+              <div className="mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                <span className="truncate">
+                  {g.state === "sent" && batch ? expiryLabel(batch.expiresAt) : null}
+                  {g.state === "accepted" || g.state === "rejected"
+                    ? `${g.state === "accepted" ? "Accepted" : "Declined"} ${g.decidedAt ? fmt(new Date(g.decidedAt), "MMM d") : ""}`
+                    : null}
+                  {g.state === "expired" && "Invitation expired"}
+                  {g.state === "cancelled" && "Cancelled by organizer"}
+                  {viewerId === MAIN_ORGANIZER_ID && g.inviterId !== MAIN_ORGANIZER_ID && ` · by ${inviters.find((i) => i.id === g.inviterId)?.name}`}
+                </span>
+                {g.state === "sent" && (
+                  <button onClick={() => { cancelInvite(g.id); toast.success("Invitation cancelled"); }} className="inline-flex shrink-0 items-center gap-1 hover:text-foreground">
+                    <X className="h-3.5 w-3.5" /> Cancel
+                  </button>
+                )}
+                {(g.state === "expired" || g.state === "cancelled") && (
+                  <button onClick={() => { restageGuest(g.id); toast.success(`${g.contactName} moved back to the guest list`); }} className="inline-flex shrink-0 items-center gap-1 hover:text-foreground">
+                    <RotateCcw className="h-3.5 w-3.5" /> Re-invite
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="absolute inset-x-0 bottom-20 px-5">
         <Link
-          to="/organizer/send"
-          search={{ event: eventId, inviter: MAIN_ORGANIZER_ID }}
-          aria-disabled={!canSend}
-          className={`flex items-center justify-center gap-2 rounded-full py-4 text-sm font-medium shadow-elegant ${
-            canSend ? "bg-foreground text-background" : "pointer-events-none bg-muted text-muted-foreground"
-          }`}
+          to="/organizer/guests"
+          className="flex items-center justify-center gap-2 rounded-full bg-foreground py-4 text-sm font-medium text-background shadow-elegant"
         >
-          {canSend ? `Prepare invitations (${staged} ready)` : "Stage guests to continue"}
-          {canSend && <ArrowRight className="h-4 w-4 rtl:rotate-180" />}
+          <Send className="h-4 w-4" /> Prepare new invitations
         </Link>
       </div>
     </MobileShell>
@@ -169,68 +210,9 @@ function InviteHub() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border bg-card p-4 text-center">
+    <div className="rounded-2xl border bg-card p-3 text-center">
       <p className="font-serif text-2xl leading-none">{value}</p>
-      <p className="mt-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className="mt-1.5 text-[9px] uppercase tracking-widest text-muted-foreground">{label}</p>
     </div>
-  );
-}
-
-function Step({
-  n,
-  to,
-  search,
-  icon: Icon,
-  title,
-  desc,
-  done,
-  disabled,
-}: {
-  n: number;
-  to: string;
-  search?: Record<string, string>;
-  icon: typeof Send;
-  title: string;
-  desc: string;
-  done?: boolean;
-  disabled?: boolean;
-}) {
-  const body = (
-    <>
-      <span
-        className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm ${
-          done ? "bg-foreground text-background" : "bg-foreground/5"
-        }`}
-      >
-        {done ? <Check className="h-4 w-4" /> : n}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="flex items-center gap-2 text-sm font-medium">
-          <Icon className="h-4 w-4 text-muted-foreground" /> {title}
-        </p>
-        <p className="mt-0.5 text-xs text-muted-foreground">{desc}</p>
-      </div>
-      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground rtl:rotate-180" />
-    </>
-  );
-  const cls = `flex items-center gap-4 rounded-2xl border bg-card p-4 transition-colors ${
-    disabled ? "pointer-events-none opacity-50" : "hover:bg-muted"
-  }`;
-  if (disabled) return <div className={cls}>{body}</div>;
-  return (
-    <Link to={to} search={search} className={cls}>
-      {body}
-    </Link>
-  );
-}
-
-function Quick({ to, icon: Icon, label }: { to: string; icon: typeof Send; label: string }) {
-  return (
-    <Link
-      to={to}
-      className="flex items-center justify-center gap-2 rounded-2xl border bg-card py-3.5 text-sm font-medium hover:bg-muted"
-    >
-      <Icon className="h-4 w-4" /> {label}
-    </Link>
   );
 }
