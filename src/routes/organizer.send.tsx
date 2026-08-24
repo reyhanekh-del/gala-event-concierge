@@ -6,6 +6,7 @@ import {
   EXPIRY_HOURS,
   MAIN_ORGANIZER_ID,
   REMINDER_BEFORE_EXPIRY_HOURS,
+  remainingAllowance,
   sendBatch,
   updateGuest,
   updateMember,
@@ -14,7 +15,7 @@ import {
   type StagedGuest,
 } from "@/mock/guestListStore";
 import { toast } from "sonner";
-import { AlertTriangle, Check, ChevronRight, MessageCircle } from "lucide-react";
+import { AlertTriangle, Check, ImagePlus, MessageCircle, Search } from "lucide-react";
 
 type Search = { event?: string; inviter?: string };
 
@@ -27,9 +28,9 @@ export const Route = createFileRoute("/organizer/send")({
   head: () => ({
     meta: [
       { title: "Prepare invitations | Gala Organizer" },
-      { name: "description", content: "Choose format and language, review guest names, and send an invitation batch." },
+      { name: "description", content: "Set up an invitation batch, choose recipients, review names and preview before sending." },
       { property: "og:title", content: "Prepare invitations | Gala Organizer" },
-      { property: "og:description", content: "Prepare a WhatsApp invitation batch with per-guest name review." },
+      { property: "og:description", content: "A guided flow for sending a WhatsApp invitation batch." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -39,8 +40,14 @@ export const Route = createFileRoute("/organizer/send")({
 type Format = "wedding" | "other";
 type Lang = "en" | "ar";
 
+const STEPS = ["Setup", "Details", "Recipients", "Review"];
+
 const dayFmt = (iso: string, lang: Lang) =>
-  new Date(iso).toLocaleDateString(lang === "ar" ? "ar-EG-u-nu-latn" : "en-US", { weekday: "long", month: "short", day: "numeric" });
+  new Date(iso).toLocaleDateString(lang === "ar" ? "ar-EG-u-nu-latn" : "en-US", {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  });
 
 function SendFlow() {
   const { event, inviter } = Route.useSearch();
@@ -52,77 +59,105 @@ function SendFlow() {
   const ev = eventById(eventId);
 
   const [step, setStep] = useState(1);
-  const [format, setFormat] = useState<Format>("wedding");
-  const [lang, setLang] = useState<Lang>("en");
+  const [format, setFormat] = useState<Format | null>(null);
+  const [lang, setLang] = useState<Lang | null>(null);
   const [fields, setFields] = useState<Record<string, string>>({});
+  const [hasImage, setHasImage] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [q, setQ] = useState("");
   const [previewId, setPreviewId] = useState<string | null>(null);
+  const [tab, setTab] = useState<"names" | "preview">("names");
   const [warn, setWarn] = useState(false);
+  const [confirm, setConfirm] = useState(false);
 
-  const staged = useMemo(
-    () => visibleGuests(eventId, inviterId, all).filter((g) => g.state === "staged" || g.state === "expired"),
+  const L = (lang ?? "en") as Lang;
+  const F = (format ?? "wedding") as Format;
+  const rtl = L === "ar";
+
+  const eligible = useMemo(
+    () => visibleGuests(eventId, inviterId, all).filter((g) => g.state === "staged"),
     [all, eventId, inviterId],
   );
-  const selectedGuests = staged.filter((g) => selected.has(g.id));
+  const filtered = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    return eligible.filter((g) => !t || g.contactName.toLowerCase().includes(t) || g.phone.includes(t));
+  }, [eligible, q]);
+  const selectedGuests = eligible.filter((g) => selected.has(g.id));
   const yellow = selectedGuests.filter((g) => !g.reviewed);
+  const allowance = remainingAllowance(eventId, inviterId);
+  const overAllowance = selected.size > Math.max(allowance.remaining, 0);
 
   const required: { key: string; label: string }[] =
-    format === "wedding"
+    F === "wedding"
       ? [
-          { key: "hosts", label: lang === "ar" ? "أسماء المضيفين" : "Host names" },
-          { key: "bride", label: lang === "ar" ? "اسم العروس" : "Bride name" },
-          { key: "groom", label: lang === "ar" ? "اسم العريس" : "Groom name" },
+          { key: "hosts", label: rtl ? "أسماء المضيفين" : "Host names" },
+          { key: "bride", label: rtl ? "اسم العروس" : "Bride name" },
+          { key: "groom", label: rtl ? "اسم العريس" : "Groom name" },
         ]
-      : [{ key: "eventName", label: lang === "ar" ? "اسم المناسبة" : "Event name" }];
+      : [{ key: "eventName", label: rtl ? "اسم المناسبة" : "Event name" }];
 
-  const missingDerived = [
-    !ev?.date && "Event date/time",
-    !ev?.address && "Venue address",
-    !ev?.city && "Maps URL",
-  ].filter(Boolean) as string[];
+  const missingFields = required.filter((f) => !(fields[f.key] ?? "").trim());
+  const missingDerived = [!ev?.date && "Event date & time", !ev?.address && "Venue address"].filter(Boolean) as string[];
 
   const previewGuest = selectedGuests.find((g) => g.id === previewId) ?? selectedGuests[0];
 
   const partyNames = (g?: StagedGuest) => {
     const names = (g?.members ?? []).map((m) => m.name.trim()).filter(Boolean);
     if (names.length > 1) {
-      const sep = lang === "ar" ? " و" : " & ";
-      return names.slice(0, -1).join(lang === "ar" ? "، " : ", ") + sep + names[names.length - 1];
+      const sep = rtl ? " و" : " & ";
+      return names.slice(0, -1).join(rtl ? "، " : ", ") + sep + names[names.length - 1];
     }
     return names[0];
   };
 
   const message = (g?: StagedGuest) => {
-    const name = g ? (partyNames(g) || g.displayName || g.contactName) : "—";
-    const when = ev ? dayFmt(ev.date, lang) : "—";
-    if (lang === "ar") {
-      return format === "wedding"
-        ? `عزيزنا ${name}،\nيسر ${fields['hosts'] || "عائلة المضيف"} دعوتكم لحضور حفل زفاف ${fields['bride'] || "العروس"} و${fields['groom'] || "العريس"}.\n${when} — ${ev?.address ?? ""}\nالموقع على الخريطة · صفحة التفاصيل · بطاقة الدخول`
-        : `عزيزنا ${name}،\nيسعدنا دعوتكم إلى ${fields['eventName'] || ev?.nameAr || ""}.\n${when} — ${ev?.address ?? ""}\nالموقع على الخريطة · صفحة التفاصيل · بطاقة الدخول`;
+    const name = g ? g.displayName || partyNames(g) || g.contactName : "—";
+    const when = ev ? dayFmt(ev.date, L) : "—";
+    if (rtl) {
+      return F === "wedding"
+        ? `عزيزنا ${name}،\nيسر ${fields['hosts'] || "عائلة المضيف"} دعوتكم لحضور حفل زفاف ${fields['bride'] || "العروس"} و${fields['groom'] || "العريس"}.\n${when} — ${ev?.addressAr ?? ev?.address ?? ""}\n\nالموقع على الخريطة · صفحة التفاصيل · بطاقة الدخول`
+        : `عزيزنا ${name}،\nيسعدنا دعوتكم إلى ${fields['eventName'] || ev?.nameAr || ""}.\n${when} — ${ev?.addressAr ?? ev?.address ?? ""}\n\nالموقع على الخريطة · صفحة التفاصيل · بطاقة الدخول`;
     }
-    return format === "wedding"
-      ? `Dear ${name},\n${fields['hosts'] || "The host family"} request the pleasure of your company at the wedding of ${fields['bride'] || "the bride"} & ${fields['groom'] || "the groom"}.\n${when} — ${ev?.address ?? ""}\nMaps · Details page · Entry pass`
-      : `Dear ${name},\nYou are invited to ${fields['eventName'] || ev?.name || ""}.\n${when} — ${ev?.address ?? ""}\nMaps · Details page · Entry pass`;
+    return F === "wedding"
+      ? `Dear ${name},\n${fields['hosts'] || "The host family"} request the pleasure of your company at the wedding of ${fields['bride'] || "the bride"} & ${fields['groom'] || "the groom"}.\n${when} — ${ev?.address ?? ""}\n\nMaps · Details page · Entry pass`
+      : `Dear ${name},\nYou are invited to ${fields['eventName'] || ev?.name || ""}.\n${when} — ${ev?.address ?? ""}\n\nMaps · Details page · Entry pass`;
   };
 
+  const canContinue =
+    (step === 1 && !!format && !!lang) ||
+    (step === 2 && missingFields.length === 0 && missingDerived.length === 0) ||
+    (step === 3 && selected.size > 0 && !overAllowance);
+
   const doSend = () => {
-    sendBatch({ eventId, inviterId, format, language: lang, guestIds: [...selected] });
-    toast.success(`Sent ${selected.size} invitations · expires in ${EXPIRY_HOURS}h, reminder at ${EXPIRY_HOURS - REMINDER_BEFORE_EXPIRY_HOURS}h`);
-    nav({ to: "/organizer/invite/history" });
+    sendBatch({ eventId, inviterId, format: F, language: L, fields, guestIds: [...selected] });
+    toast.success(`${selected.size} invitation${selected.size === 1 ? "" : "s"} sent`);
+    nav({ to: "/organizer/invite" });
   };
 
   return (
-    <MobileShell showBack title={`Prepare invitations · ${step}/4`}>
-      <div className="px-5 pt-2 pb-32 space-y-5">
-        <div className="flex gap-1.5">
-          {[1, 2, 3, 4].map((s) => (
-            <span key={s} className={`h-1 flex-1 rounded-full ${s <= step ? "bg-foreground" : "bg-muted"}`} />
-          ))}
+    <MobileShell showBack title="Prepare invitations">
+      <div className="space-y-5 px-5 pt-2 pb-32">
+        <div>
+          <div className="flex gap-1.5">
+            {STEPS.map((s, i) => (
+              <span key={s} className={`h-1 flex-1 rounded-full ${i < step ? "bg-foreground" : "bg-muted"}`} />
+            ))}
+          </div>
+          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+            <span>Step {step} of 4 · {STEPS[step - 1]}</span>
+            {format && lang && step > 1 && (
+              <span className="rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-widest">
+                {F === "wedding" ? "Wedding" : "Other"} · {rtl ? "العربية" : "English"}
+              </span>
+            )}
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground">{ev?.name}</p>
 
         {step === 1 && (
-          <div className="space-y-5">
+          <div className="space-y-6">
+            <p className="text-sm text-muted-foreground">
+              Each batch has its own format and language. You can send other batches for {ev?.name} later.
+            </p>
             <Group label="Invitation format">
               {(["wedding", "other"] as Format[]).map((f) => (
                 <Choice key={f} active={format === f} onClick={() => setFormat(f)} label={f === "wedding" ? "Wedding" : "Other"} />
@@ -133,9 +168,6 @@ function SendFlow() {
                 <Choice key={l} active={lang === l} onClick={() => setLang(l)} label={l === "en" ? "English" : "العربية"} />
               ))}
             </Group>
-            <p className="text-xs text-muted-foreground">
-              Format and language apply to this batch only. To mix languages, send separate batches.
-            </p>
           </div>
         )}
 
@@ -143,26 +175,30 @@ function SendFlow() {
           <div className="space-y-4">
             {required.map((f) => (
               <div key={f.key} className="space-y-2">
-                <label className="text-xs uppercase tracking-widest text-muted-foreground">{f.label}</label>
+                <label htmlFor={`f_${f.key}`} className="text-xs uppercase tracking-widest text-muted-foreground">{f.label}</label>
                 <input
+                  id={`f_${f.key}`}
                   value={fields[f.key] ?? ""}
                   onChange={(e) => setFields({ ...fields, [f.key]: e.target.value })}
-                  dir={lang === "ar" ? "rtl" : "ltr"}
+                  dir={rtl ? "rtl" : "ltr"}
                   className="w-full rounded-2xl border bg-card px-5 py-3.5 text-sm"
                 />
               </div>
             ))}
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-widest text-muted-foreground">Invitation image (optional)</label>
-              <button className="w-full rounded-2xl border border-dashed py-6 text-sm text-muted-foreground">Upload header image</button>
-            </div>
-            <div className="rounded-2xl border bg-card p-4 text-xs text-muted-foreground space-y-1">
-              <p className="uppercase tracking-widest">Derived from event</p>
-              <p>Date · {ev ? dayFmt(ev.date, lang) : "—"}</p>
-              <p>Venue · {ev?.address}</p>
-              <p>Maps URL · Details page URL · Entry pass QR · Timezone (AST)</p>
+
+            <button
+              onClick={() => setHasImage(!hasImage)}
+              className={`flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed py-6 text-sm ${hasImage ? "border-foreground text-foreground" : "text-muted-foreground"}`}
+            >
+              <ImagePlus className="h-4 w-4" /> {hasImage ? "Header image attached" : "Add header image (optional)"}
+            </button>
+
+            <div className="rounded-2xl border bg-card p-4">
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Event details used in this invitation</p>
+              <p className="mt-2 text-sm">{ev ? dayFmt(ev.date, L) : "—"}</p>
+              <p className="text-xs text-muted-foreground">{ev?.address} · maps link, details page and entry pass are added automatically</p>
               {missingDerived.length > 0 && (
-                <p className="text-amber-600">Missing before send: {missingDerived.join(", ")}</p>
+                <p className="mt-2 text-xs text-amber-600">Complete on the event first: {missingDerived.join(", ")}</p>
               )}
             </div>
           </div>
@@ -170,15 +206,31 @@ function SendFlow() {
 
         {step === 3 && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">{selected.size} of {staged.length} selected</span>
-              <div className="flex gap-3">
-                <button onClick={() => setSelected(new Set(staged.map((g) => g.id)))} className="font-medium">Select all</button>
-                <button onClick={() => setSelected(new Set())} className="text-muted-foreground">Deselect all</button>
-              </div>
+            <div className="relative">
+              <Search className="absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search guests"
+                className="w-full rounded-full border bg-card py-3 pe-4 ps-11 text-sm outline-none focus:ring-2 focus:ring-foreground/10"
+              />
             </div>
-            {staged.length === 0 && <p className="py-10 text-center text-sm text-muted-foreground">No staged guests for this inviter.</p>}
-            {staged.map((g) => {
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">{selected.size} of {eligible.length} selected</span>
+              <button
+                onClick={() => setSelected(selected.size === eligible.length ? new Set() : new Set(eligible.map((g) => g.id)))}
+                className="font-medium"
+              >
+                {selected.size === eligible.length ? "Deselect all" : "Select all"}
+              </button>
+            </div>
+            {overAllowance && (
+              <p className="rounded-2xl border border-amber-500/50 bg-amber-50 p-3 text-xs text-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+                Only {Math.max(allowance.remaining, 0)} invitations remain in this allowance. Deselect {selected.size - Math.max(allowance.remaining, 0)} guest(s).
+              </p>
+            )}
+            {eligible.length === 0 && <p className="py-10 text-center text-sm text-muted-foreground">No guests ready to invite.</p>}
+            {filtered.map((g) => {
               const on = selected.has(g.id);
               return (
                 <button
@@ -188,13 +240,15 @@ function SendFlow() {
                     if (on) n.delete(g.id); else n.add(g.id);
                     setSelected(n);
                   }}
-                  className="w-full flex items-center gap-3 rounded-2xl border bg-card p-3.5 text-start"
+                  className="flex w-full items-center gap-3 rounded-2xl border bg-card p-3.5 text-start"
                 >
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-sm font-medium truncate">{g.contactName}</span>
-                    <span className="block text-xs text-muted-foreground">{g.phone}{g.groupSize > 1 ? ` · group of ${g.groupSize}: ${g.members.map((m) => m.name).join(", ")}` : ""}{g.state === "expired" ? " · previous invite expired" : ""}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium">{g.contactName}</span>
+                    <span className="block text-xs text-muted-foreground">
+                      {g.phone}{g.groupSize > 1 ? ` · group of ${g.groupSize}` : ""}
+                    </span>
                   </span>
-                  <span className={`h-5 w-5 rounded-full border flex items-center justify-center ${on ? "bg-foreground border-foreground" : ""}`}>
+                  <span className={`flex h-5 w-5 items-center justify-center rounded-full border ${on ? "border-foreground bg-foreground" : ""}`}>
                     {on && <Check className="h-3 w-3 text-background" />}
                   </span>
                 </button>
@@ -205,122 +259,171 @@ function SendFlow() {
 
         {step === 4 && (
           <div className="space-y-4">
-            <p className="rounded-2xl bg-muted p-3 text-xs text-muted-foreground">
-              Review invitation names before sending. Yellow names are still using contact names and may look informal in the invitation.
-            </p>
-
-            <div className="rounded-2xl border bg-card p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-white"><MessageCircle className="h-3.5 w-3.5" /></span>
-                <span className="text-sm font-medium">Preview · {previewGuest?.displayName || previewGuest?.contactName || "—"}</span>
-              </div>
-              <pre dir={lang === "ar" ? "rtl" : "ltr"} className="whitespace-pre-wrap rounded-2xl bg-emerald-50 p-4 text-sm font-sans dark:bg-emerald-950/30">{message(previewGuest)}</pre>
+            <div className="grid grid-cols-2 gap-1 rounded-full border p-1">
+              {(["names", "preview"] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className={`rounded-full py-2 text-xs font-medium ${tab === t ? "bg-foreground text-background" : "text-muted-foreground"}`}
+                >
+                  {t === "names" ? `Names (${selectedGuests.length})` : "Invitation preview"}
+                </button>
+              ))}
             </div>
 
-            {selectedGuests.map((g) => (
-              <div key={g.id} className={`rounded-2xl border bg-card p-4 ${g.reviewed ? "border-emerald-500/50" : "border-amber-500/60"}`}>
-                <div className="flex items-center justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="text-xs text-muted-foreground truncate">Contact name · {g.contactName}</p>
-                  </div>
-                  <span className={`h-2.5 w-2.5 rounded-full ${g.reviewed ? "bg-emerald-500" : "bg-amber-500"}`} />
-                </div>
-                <input
-                  value={g.displayName ?? g.contactName}
-                  onChange={(e) => updateGuest(g.id, { displayName: e.target.value, reviewed: true })}
-                  dir={lang === "ar" ? "rtl" : "ltr"}
-                  className="mt-2 w-full rounded-xl border bg-background px-4 py-2.5 text-sm"
-                />
-                {g.groupSize > 1 && (
-                  <div className="mt-3 space-y-2 rounded-xl bg-muted/60 p-3">
-                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      Group of {g.groupSize} · each name RSVPs separately
-                    </p>
-                    {g.members.map((m, i) => (
-                      <div key={m.id} className="flex items-center gap-2">
-                        <span className="w-5 shrink-0 text-xs text-muted-foreground">{i + 1}.</span>
-                        <input
-                          value={m.name}
-                          onChange={(e) => updateMember(g.id, m.id, e.target.value)}
-                          dir={lang === "ar" ? "rtl" : "ltr"}
-                          className="flex-1 rounded-lg border bg-background px-3 py-2 text-sm"
-                        />
-                        {i === 0 && <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Phone</span>}
+            {tab === "names" ? (
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground">
+                  Review how each guest's name appears in the invitation. Yellow names still use the contact name and may look informal.
+                </p>
+                {selectedGuests.map((g) => (
+                  <div key={g.id} className="rounded-2xl border bg-card p-4">
+                    <div className="flex items-center gap-2">
+                      <span className={`h-2 w-2 shrink-0 rounded-full ${g.reviewed ? "bg-emerald-500" : "bg-amber-500"}`} />
+                      <input
+                        value={g.displayName ?? g.contactName}
+                        onChange={(e) => updateGuest(g.id, { displayName: e.target.value, reviewed: true })}
+                        dir={rtl ? "rtl" : "ltr"}
+                        aria-label={`Invitation name for ${g.contactName}`}
+                        className="min-w-0 flex-1 rounded-xl border bg-background px-4 py-2.5 text-sm"
+                      />
+                    </div>
+                    <div className="mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                      <span className="truncate">From contacts: {g.contactName}</span>
+                      {g.reviewed ? (
+                        <button onClick={() => { setPreviewId(g.id); setTab("preview"); }} className="shrink-0 font-medium text-foreground">Preview</button>
+                      ) : (
+                        <button onClick={() => updateGuest(g.id, { displayName: g.contactName, reviewed: true })} className="shrink-0 font-medium text-foreground">
+                          Confirm name
+                        </button>
+                      )}
+                    </div>
+                    {g.groupSize > 1 && (
+                      <div className="mt-3 space-y-2 rounded-xl bg-muted/60 p-3">
+                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Group of {g.groupSize} · each RSVPs separately</p>
+                        {g.members.map((m, i) => (
+                          <input
+                            key={m.id}
+                            value={m.name}
+                            onChange={(e) => updateMember(g.id, m.id, e.target.value)}
+                            dir={rtl ? "rtl" : "ltr"}
+                            aria-label={`Group member ${i + 1}`}
+                            className="w-full rounded-lg border bg-background px-3 py-2 text-sm"
+                          />
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                )}
-                <div className="mt-2 flex items-center justify-between text-xs">
-                  <button onClick={() => setPreviewId(g.id)} className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground">
-                    Preview this guest <ChevronRight className="h-3 w-3 rtl:rotate-180" />
-                  </button>
-                  {!g.reviewed && (
-                    <button onClick={() => updateGuest(g.id, { displayName: g.contactName, reviewed: true })} className="font-medium">
-                      Confirm name
-                    </button>
-                  )}
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <select
+                  aria-label="Preview guest"
+                  value={previewGuest?.id ?? ""}
+                  onChange={(e) => setPreviewId(e.target.value)}
+                  className="w-full rounded-2xl border bg-card px-5 py-3 text-sm"
+                >
+                  {selectedGuests.map((g) => (
+                    <option key={g.id} value={g.id}>{g.displayName ?? g.contactName}</option>
+                  ))}
+                </select>
+                <div className="rounded-2xl border bg-card p-4">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-white">
+                      <MessageCircle className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="text-sm font-medium">WhatsApp preview</span>
+                  </div>
+                  {hasImage && <div className="mb-2 h-24 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-600" />}
+                  <pre dir={rtl ? "rtl" : "ltr"} className="whitespace-pre-wrap rounded-2xl bg-emerald-50 p-4 font-sans text-sm dark:bg-emerald-950/30">
+                    {message(previewGuest)}
+                  </pre>
                 </div>
               </div>
-            ))}
+            )}
 
             <p className="text-xs text-muted-foreground">
-              Invites expire {EXPIRY_HOURS}h after sending. An idle reminder goes out {EXPIRY_HOURS - REMINDER_BEFORE_EXPIRY_HOURS}h after sending ({REMINDER_BEFORE_EXPIRY_HOURS}h before expiry).
+              Invitations expire {EXPIRY_HOURS} hours after sending, with a reminder {REMINDER_BEFORE_EXPIRY_HOURS} hours before expiry.
             </p>
           </div>
         )}
       </div>
 
-      <div className="absolute bottom-0 inset-x-0 border-t bg-background/95 p-4 backdrop-blur">
+      <div className="absolute inset-x-0 bottom-0 flex gap-3 border-t bg-background/95 p-4 backdrop-blur">
+        {step > 1 && (
+          <button onClick={() => setStep(step - 1)} className="rounded-full border px-6 py-4 text-sm font-medium">Back</button>
+        )}
         {step < 4 ? (
           <button
-            disabled={step === 3 && selected.size === 0}
+            disabled={!canContinue}
             onClick={() => setStep(step + 1)}
-            className="w-full rounded-full bg-foreground py-4 text-sm font-medium text-background disabled:bg-muted disabled:text-muted-foreground"
+            className="flex-1 rounded-full bg-foreground py-4 text-sm font-medium text-background disabled:bg-muted disabled:text-muted-foreground"
           >
-            Continue
+            {step === 3 && selected.size > 0 ? `Continue with ${selected.size}` : "Continue"}
           </button>
         ) : (
           <button
-            onClick={() => (yellow.length ? setWarn(true) : doSend())}
-            className="w-full rounded-full bg-foreground py-4 text-sm font-medium text-background"
+            onClick={() => (yellow.length ? setWarn(true) : setConfirm(true))}
+            className="flex-1 rounded-full bg-foreground py-4 text-sm font-medium text-background"
           >
-            Send {selected.size} invitations
+            Send {selected.size} invitation{selected.size === 1 ? "" : "s"}
           </button>
         )}
       </div>
 
       {warn && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 p-5" onClick={() => setWarn(false)}>
-          <div className="w-full rounded-3xl bg-background p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
-              <p className="font-medium">Unreviewed names</p>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {yellow.length} guests are still using contact names in the invitation. These may look informal or incorrect. Review names before sending, or send anyway.
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => setWarn(false)} className="rounded-full border py-3.5 text-sm font-medium">Review names</button>
-              <button onClick={doSend} className="rounded-full bg-foreground py-3.5 text-sm font-medium text-background">Send anyway</button>
-            </div>
+        <Modal onClose={() => setWarn(false)}>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            <p className="font-medium">Unreviewed names</p>
           </div>
-        </div>
+          <p className="text-sm text-muted-foreground">
+            {yellow.length} guest{yellow.length === 1 ? " is" : "s are"} still using their contact name in the invitation. These names may look informal or incorrect.
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <button onClick={() => { setWarn(false); setTab("names"); }} className="rounded-full border py-3.5 text-sm font-medium">Review names</button>
+            <button onClick={() => { setWarn(false); setConfirm(true); }} className="rounded-full bg-foreground py-3.5 text-sm font-medium text-background">Send anyway</button>
+          </div>
+        </Modal>
+      )}
+
+      {confirm && (
+        <Modal onClose={() => setConfirm(false)}>
+          <p className="font-medium">Send this batch?</p>
+          <p className="text-sm text-muted-foreground">
+            {selected.size} WhatsApp invitation{selected.size === 1 ? "" : "s"} · {F === "wedding" ? "Wedding" : "Other"} · {rtl ? "Arabic" : "English"}.
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <button onClick={() => setConfirm(false)} className="rounded-full border py-3.5 text-sm font-medium">Cancel</button>
+            <button onClick={doSend} className="rounded-full bg-foreground py-3.5 text-sm font-medium text-background">Send now</button>
+          </div>
+        </Modal>
       )}
     </MobileShell>
+  );
+}
+
+function Modal({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+  return (
+    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 p-5" onClick={onClose}>
+      <div className="w-full space-y-4 rounded-3xl bg-background p-5" onClick={(e) => e.stopPropagation()}>{children}</div>
+    </div>
   );
 }
 
 function Group({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
-      <label className="text-xs uppercase tracking-widest text-muted-foreground">{label}</label>
+      <p className="text-xs uppercase tracking-widest text-muted-foreground">{label}</p>
       <div className="grid grid-cols-2 gap-2">{children}</div>
     </div>
   );
 }
+
 function Choice({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
   return (
-    <button onClick={onClick} className={`rounded-2xl border py-3.5 text-sm font-medium ${active ? "bg-foreground text-background border-foreground" : ""}`}>
+    <button onClick={onClick} className={`rounded-2xl border py-3.5 text-sm font-medium ${active ? "border-foreground bg-foreground text-background" : ""}`}>
       {label}
     </button>
   );

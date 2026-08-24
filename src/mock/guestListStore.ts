@@ -24,8 +24,10 @@ export type StagedGuest = {
   members: GroupMember[];
   groupSize: number;
   state: InviteState;
+  batchId?: string;
   invitedAt?: string;
   decidedAt?: string;
+  checkedIn?: boolean;
 };
 
 export type SendBatch = {
@@ -34,6 +36,7 @@ export type SendBatch = {
   inviterId: string;
   format: "wedding" | "other";
   language: "en" | "ar";
+  fields: Record<string, string>;
   count: number;
   sentAt: string;
   expiresAt: string;
@@ -43,6 +46,17 @@ export type SendBatch = {
 export const MAIN_ORGANIZER_ID = "o_self";
 export const EXPIRY_HOURS = 72;
 export const REMINDER_BEFORE_EXPIRY_HOURS = 24;
+
+/** Simple, user-facing expiry copy. */
+export function expiryLabel(expiresAt?: string) {
+  if (!expiresAt) return "";
+  const ms = +new Date(expiresAt) - Date.now();
+  if (ms <= 0)
+    return `Expired on ${new Date(expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`;
+  const h = Math.round(ms / 3600_000);
+  return h >= 24 ? `Expires in ${Math.round(h / 24)} day${h >= 48 ? "s" : ""}` : `Expires in ${h} hour${h === 1 ? "" : "s"}`;
+}
+
 
 export function inviterName(id: string) {
   if (id === MAIN_ORGANIZER_ID) return "You (Organizer)";
@@ -197,6 +211,7 @@ export function sendBatch(input: {
   inviterId: string;
   format: "wedding" | "other";
   language: "en" | "ar";
+  fields?: Record<string, string>;
   guestIds: string[];
 }) {
   const now = new Date().toISOString();
@@ -206,16 +221,47 @@ export function sendBatch(input: {
     inviterId: input.inviterId,
     format: input.format,
     language: input.language,
+    fields: input.fields ?? {},
     count: input.guestIds.length,
     sentAt: now,
     expiresAt: hours(EXPIRY_HOURS),
     reminderAt: hours(EXPIRY_HOURS - REMINDER_BEFORE_EXPIRY_HOURS),
   };
   batches = [batch, ...batches];
-  staged = staged.map((g) => (input.guestIds.includes(g.id) ? { ...g, state: "sent", invitedAt: now } : g));
+  staged = staged.map((g) =>
+    input.guestIds.includes(g.id) ? { ...g, state: "sent", invitedAt: now, batchId: batch.id } : g,
+  );
   notify();
   return batch;
 }
+
+/** Cancel a still-open invitation (sent or expired). */
+export function cancelInvite(id: string) {
+  staged = staged.map((g) => (g.id === id ? { ...g, state: "cancelled", decidedAt: new Date().toISOString() } : g));
+  notify();
+}
+
+/** Move an expired/cancelled invitation back to the staged list so it can join a new batch. */
+export function restageGuest(id: string) {
+  staged = staged.map((g) =>
+    g.id === id ? { ...g, state: "staged", batchId: undefined, invitedAt: undefined, decidedAt: undefined } : g,
+  );
+  notify();
+}
+
+/** Lifecycle counters for a set of invitations. */
+export function lifecycle(list: StagedGuest[]) {
+  return {
+    sent: list.length,
+    pending: list.filter((g) => g.state === "sent").length,
+    accepted: list.filter((g) => g.state === "accepted").length,
+    rejected: list.filter((g) => g.state === "rejected").length,
+    expired: list.filter((g) => g.state === "expired").length,
+    cancelled: list.filter((g) => g.state === "cancelled").length,
+    checkedIn: list.filter((g) => g.checkedIn).length,
+  };
+}
+
 
 export function remainingAllowance(eventId: string, inviterId: string) {
   if (inviterId === MAIN_ORGANIZER_ID) {
