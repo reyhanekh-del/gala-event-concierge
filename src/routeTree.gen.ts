@@ -53,9 +53,6 @@ import { Route as VenueEventsNewRouteImport } from './routes/venue.events.new'
 import { Route as VenueEventsIdRouteImport } from './routes/venue.events.$id'
 import { Route as VenueCreditsBuyRouteImport } from './routes/venue.credits.buy'
 import { Route as ScannerResultStateRouteImport } from './routes/scanner.result.$state'
-import { Route as OrganizerInviteSingleRouteImport } from './routes/organizer.invite.single'
-import { Route as OrganizerInviteHistoryRouteImport } from './routes/organizer.invite.history'
-import { Route as OrganizerInviteGroupRouteImport } from './routes/organizer.invite.group'
 import { Route as OrganizerEventsNewRouteImport } from './routes/organizer.events.new'
 import { Route as OrganizerEventsIdRouteImport } from './routes/organizer.events.$id'
 import { Route as OrganizerDelegationAllocateRouteImport } from './routes/organizer.delegation.allocate'
@@ -288,21 +285,6 @@ const ScannerResultStateRoute = ScannerResultStateRouteImport.update({
   path: '/result/$state',
   getParentRoute: () => ScannerRoute,
 } as any)
-const OrganizerInviteSingleRoute = OrganizerInviteSingleRouteImport.update({
-  id: '/invite/single',
-  path: '/invite/single',
-  getParentRoute: () => OrganizerRoute,
-} as any)
-const OrganizerInviteHistoryRoute = OrganizerInviteHistoryRouteImport.update({
-  id: '/invite/history',
-  path: '/invite/history',
-  getParentRoute: () => OrganizerRoute,
-} as any)
-const OrganizerInviteGroupRoute = OrganizerInviteGroupRouteImport.update({
-  id: '/invite/group',
-  path: '/invite/group',
-  getParentRoute: () => OrganizerRoute,
-} as any)
 const OrganizerEventsNewRoute = OrganizerEventsNewRouteImport.update({
   id: '/events/new',
   path: '/events/new',
@@ -398,9 +380,6 @@ export interface FileRoutesByFullPath {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
-  '/organizer/invite/group': typeof OrganizerInviteGroupRoute
-  '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
-  '/organizer/invite/single': typeof OrganizerInviteSingleRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
@@ -451,9 +430,6 @@ export interface FileRoutesByTo {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
-  '/organizer/invite/group': typeof OrganizerInviteGroupRoute
-  '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
-  '/organizer/invite/single': typeof OrganizerInviteSingleRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
@@ -511,9 +487,6 @@ export interface FileRoutesById {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
-  '/organizer/invite/group': typeof OrganizerInviteGroupRoute
-  '/organizer/invite/history': typeof OrganizerInviteHistoryRoute
-  '/organizer/invite/single': typeof OrganizerInviteSingleRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
@@ -572,9 +545,6 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
-    | '/organizer/invite/group'
-    | '/organizer/invite/history'
-    | '/organizer/invite/single'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
     | '/venue/events/$id'
@@ -625,9 +595,6 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
-    | '/organizer/invite/group'
-    | '/organizer/invite/history'
-    | '/organizer/invite/single'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
     | '/venue/events/$id'
@@ -684,9 +651,6 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
-    | '/organizer/invite/group'
-    | '/organizer/invite/history'
-    | '/organizer/invite/single'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
     | '/venue/events/$id'
@@ -1023,27 +987,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScannerResultStateRouteImport
       parentRoute: typeof ScannerRoute
     }
-    '/organizer/invite/single': {
-      id: '/organizer/invite/single'
-      path: '/invite/single'
-      fullPath: '/organizer/invite/single'
-      preLoaderRoute: typeof OrganizerInviteSingleRouteImport
-      parentRoute: typeof OrganizerRoute
-    }
-    '/organizer/invite/history': {
-      id: '/organizer/invite/history'
-      path: '/invite/history'
-      fullPath: '/organizer/invite/history'
-      preLoaderRoute: typeof OrganizerInviteHistoryRouteImport
-      parentRoute: typeof OrganizerRoute
-    }
-    '/organizer/invite/group': {
-      id: '/organizer/invite/group'
-      path: '/invite/group'
-      fullPath: '/organizer/invite/group'
-      preLoaderRoute: typeof OrganizerInviteGroupRouteImport
-      parentRoute: typeof OrganizerRoute
-    }
     '/organizer/events/new': {
       id: '/organizer/events/new'
       path: '/events/new'
@@ -1191,9 +1134,6 @@ interface OrganizerRouteChildren {
   OrganizerDelegationAllocateRoute: typeof OrganizerDelegationAllocateRoute
   OrganizerEventsIdRoute: typeof OrganizerEventsIdRoute
   OrganizerEventsNewRoute: typeof OrganizerEventsNewRoute
-  OrganizerInviteGroupRoute: typeof OrganizerInviteGroupRoute
-  OrganizerInviteHistoryRoute: typeof OrganizerInviteHistoryRoute
-  OrganizerInviteSingleRoute: typeof OrganizerInviteSingleRoute
   OrganizerDelegationIndexRoute: typeof OrganizerDelegationIndexRoute
   OrganizerEventsIndexRoute: typeof OrganizerEventsIndexRoute
   OrganizerInviteIndexRoute: typeof OrganizerInviteIndexRoute
@@ -1217,9 +1157,6 @@ const OrganizerRouteChildren: OrganizerRouteChildren = {
   OrganizerDelegationAllocateRoute: OrganizerDelegationAllocateRoute,
   OrganizerEventsIdRoute: OrganizerEventsIdRoute,
   OrganizerEventsNewRoute: OrganizerEventsNewRoute,
-  OrganizerInviteGroupRoute: OrganizerInviteGroupRoute,
-  OrganizerInviteHistoryRoute: OrganizerInviteHistoryRoute,
-  OrganizerInviteSingleRoute: OrganizerInviteSingleRoute,
   OrganizerDelegationIndexRoute: OrganizerDelegationIndexRoute,
   OrganizerEventsIndexRoute: OrganizerEventsIndexRoute,
   OrganizerInviteIndexRoute: OrganizerInviteIndexRoute,
