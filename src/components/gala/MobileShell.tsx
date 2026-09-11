@@ -41,11 +41,13 @@ export function MobileShell({
       )}
       <div className="flex-1 overflow-y-auto pb-24">{children}</div>
       {tabs && (
-        <nav className="absolute bottom-0 inset-x-0 border-t bg-background/95 backdrop-blur px-2 py-2">
-          <div className="grid grid-cols-5 gap-1">
+        <nav className="absolute bottom-0 inset-x-0 z-20 border-t bg-background/95 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur">
+          <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
             {tabs.map((t) => {
               const Icon = t.icon;
-              const active = path === t.to || (t.to !== "/organizer/dashboard" && path.startsWith(t.to));
+              const active = path === t.to
+                || (t.to === "/organizer/dashboard" && path.startsWith("/organizer/events"))
+                || (t.to !== "/organizer/dashboard" && path.startsWith(t.to));
               return (
                 <Link
                   key={t.to}
