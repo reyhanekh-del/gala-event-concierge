@@ -123,6 +123,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-command-canvas: var(--command-canvas);
+  --color-command-surface: var(--command-surface);
+  --color-command-ink: var(--command-ink);
+  --color-command-sage: var(--command-sage);
+  --color-command-sage-soft: var(--command-sage-soft);
+  --color-command-warm: var(--command-warm);
 
   --shadow-soft: 0 1px 2px 0 rgb(0 0 0 / 0.04), 0 4px 16px -4px rgb(0 0 0 / 0.06);
   --shadow-elegant: 0 1px 2px 0 rgb(0 0 0 / 0.05), 0 12px 40px -12px rgb(0 0 0 / 0.10);
@@ -166,6 +172,12 @@
   --sidebar-accent-foreground: oklch(0.18 0 0);
   --sidebar-border: oklch(0.92 0 0);
   --sidebar-ring: oklch(0.50 0 0);
+  --command-canvas: oklch(0.97 0.008 80);
+  --command-surface: oklch(0.995 0.004 80);
+  --command-ink: oklch(0.205 0.008 70);
+  --command-sage: oklch(0.56 0.04 140);
+  --command-sage-soft: oklch(0.92 0.025 140);
+  --command-warm: oklch(0.91 0.02 80);
 }
 
 .dark {
