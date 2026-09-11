@@ -3,7 +3,7 @@ import { ArrowRight, CalendarDays, Check, ChevronRight, CircleAlert, Clock3, Coi
 import { MobileShell } from "@/components/gala/MobileShell";
 import { organizerTabs } from "@/components/gala/organizerTabs";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/organizer/dashboard")({
@@ -191,7 +191,7 @@ function Pipeline({ value, label, last }: { value: string; label: string; last?:
   );
 }
 
-function Activity({ icon, title, detail, time }: { icon: React.ReactNode; title: string; detail?: string; time: string }) {
+function Activity({ icon, title, detail, time }: { icon: ReactNode; title: string; detail?: string; time: string }) {
   return (
     <div className="flex items-center gap-3 py-3.5">
       <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-command-sage-soft text-command-sage">{icon}</span>

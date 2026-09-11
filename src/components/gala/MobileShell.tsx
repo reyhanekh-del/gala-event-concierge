@@ -45,7 +45,9 @@ export function MobileShell({
           <div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
             {tabs.map((t) => {
               const Icon = t.icon;
-              const active = path === t.to || (t.to !== "/organizer/dashboard" && path.startsWith(t.to));
+              const active = path === t.to
+                || (t.to === "/organizer/dashboard" && path.startsWith("/organizer/events"))
+                || (t.to !== "/organizer/dashboard" && path.startsWith(t.to));
               return (
                 <Link
                   key={t.to}
