@@ -85,7 +85,9 @@ function Dashboard() {
                   <CircleAlert className="h-4 w-4 text-command-sage" />
                   <h2 id="attention-heading" className="text-xs font-semibold uppercase">Needs attention</h2>
                 </div>
-                <span className="rounded-full bg-command-warm px-2 py-0.5 text-[10px] font-semibold">{Number(!numbersResolved) + Number(!nudged)} items</span>
+                <span className="rounded-full bg-command-warm px-2 py-0.5 text-[10px] font-semibold">
+                  {Number(!numbersResolved) + Number(!nudged)} {Number(!numbersResolved) + Number(!nudged) === 1 ? "item" : "items"}
+                </span>
               </div>
               <p className="mt-3 font-serif text-xl leading-tight">Autumn Charity Gala</p>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
