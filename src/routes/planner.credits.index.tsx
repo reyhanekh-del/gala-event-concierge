@@ -17,8 +17,6 @@ export const Route = createFileRoute("/planner/credits/")({
   component: PlannerCredits,
 });
 
-export default function noop() {}
-
 function PlannerCredits() {
   const { events, transactions } = usePlannerStore();
   const c = plannerCredits();
@@ -29,7 +27,7 @@ function PlannerCredits() {
         title="Credits"
         subtitle="One shared pool across all your locations and events"
         action={
-          <Link to="/venue/credits/buy" className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background">
+          <Link to="/planner/credits/buy" className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background">
             Buy credits
           </Link>
         }
