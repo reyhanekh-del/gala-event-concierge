@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Smartphone, Mail, Building2, ScanLine, Shield, Globe, Moon, Sun } from "lucide-react";
+import { Smartphone, Mail, Building2, CalendarRange, ScanLine, Shield, Globe, Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ const APPS = [
   { to: "/organizer", label: "Organizer", icon: Smartphone, match: "/organizer" },
   { to: "/invite/g_e_wedding_0" as "/", label: "Invitee", icon: Mail, match: "/invite" },
   { to: "/venue", label: "Venue", icon: Building2, match: "/venue" },
+  { to: "/planner", label: "Planner", icon: CalendarRange, match: "/planner" },
   { to: "/scanner", label: "Scanner", icon: ScanLine, match: "/scanner" },
   { to: "/admin", label: "Admin", icon: Shield, match: "/admin" },
 ] as const;

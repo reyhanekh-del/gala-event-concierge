@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Smartphone, Mail, Building2, ScanLine, Shield, Globe } from "lucide-react";
+import { ArrowRight, Smartphone, Mail, Building2, CalendarRange, ScanLine, Shield, Globe } from "lucide-react";
 import { GalaLogo, GalaMark } from "@/components/gala/Logo";
 import { useI18n } from "@/lib/i18n";
 
@@ -19,6 +19,7 @@ function Launcher() {
     { to: "/organizer", label: t("app.organizer"), desc: t("app.organizer.desc"), icon: Smartphone },
     { to: "/invite/g_e_wedding_0", label: t("app.invitee"), desc: t("app.invitee.desc"), icon: Mail },
     { to: "/venue", label: t("app.venue"), desc: t("app.venue.desc"), icon: Building2 },
+    { to: "/planner", label: t("app.planner"), desc: t("app.planner.desc"), icon: CalendarRange },
     { to: "/scanner", label: t("app.scanner"), desc: t("app.scanner.desc"), icon: ScanLine },
     { to: "/admin", label: t("app.admin"), desc: t("app.admin.desc"), icon: Shield },
   ];
