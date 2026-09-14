@@ -65,6 +65,7 @@ import { Route as ScannerResultStateRouteImport } from './routes/scanner.result.
 import { Route as PlannerLocationsIdRouteImport } from './routes/planner.locations.$id'
 import { Route as PlannerEventsNewRouteImport } from './routes/planner.events.new'
 import { Route as PlannerEventsIdRouteImport } from './routes/planner.events.$id'
+import { Route as PlannerCreditsBuyRouteImport } from './routes/planner.credits.buy'
 import { Route as OrganizerEventsNewRouteImport } from './routes/organizer.events.new'
 import { Route as OrganizerEventsIdRouteImport } from './routes/organizer.events.$id'
 import { Route as OrganizerDelegationAllocateRouteImport } from './routes/organizer.delegation.allocate'
@@ -357,6 +358,11 @@ const PlannerEventsIdRoute = PlannerEventsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PlannerEventsRoute,
 } as any)
+const PlannerCreditsBuyRoute = PlannerCreditsBuyRouteImport.update({
+  id: '/buy',
+  path: '/buy',
+  getParentRoute: () => PlannerCreditsRoute,
+} as any)
 const OrganizerEventsNewRoute = OrganizerEventsNewRouteImport.update({
   id: '/events/new',
   path: '/events/new',
@@ -458,6 +464,7 @@ export interface FileRoutesByFullPath {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/planner/credits/buy': typeof PlannerCreditsBuyRoute
   '/planner/events/$id': typeof PlannerEventsIdRoute
   '/planner/events/new': typeof PlannerEventsNewRoute
   '/planner/locations/$id': typeof PlannerLocationsIdRoute
@@ -516,6 +523,7 @@ export interface FileRoutesByTo {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/planner/credits/buy': typeof PlannerCreditsBuyRoute
   '/planner/events/$id': typeof PlannerEventsIdRoute
   '/planner/events/new': typeof PlannerEventsNewRoute
   '/planner/locations/$id': typeof PlannerLocationsIdRoute
@@ -585,6 +593,7 @@ export interface FileRoutesById {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/planner/credits/buy': typeof PlannerCreditsBuyRoute
   '/planner/events/$id': typeof PlannerEventsIdRoute
   '/planner/events/new': typeof PlannerEventsNewRoute
   '/planner/locations/$id': typeof PlannerLocationsIdRoute
@@ -655,6 +664,7 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
+    | '/planner/credits/buy'
     | '/planner/events/$id'
     | '/planner/events/new'
     | '/planner/locations/$id'
@@ -713,6 +723,7 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
+    | '/planner/credits/buy'
     | '/planner/events/$id'
     | '/planner/events/new'
     | '/planner/locations/$id'
@@ -781,6 +792,7 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
+    | '/planner/credits/buy'
     | '/planner/events/$id'
     | '/planner/events/new'
     | '/planner/locations/$id'
@@ -1208,6 +1220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlannerEventsIdRouteImport
       parentRoute: typeof PlannerEventsRoute
     }
+    '/planner/credits/buy': {
+      id: '/planner/credits/buy'
+      path: '/buy'
+      fullPath: '/planner/credits/buy'
+      preLoaderRoute: typeof PlannerCreditsBuyRouteImport
+      parentRoute: typeof PlannerCreditsRoute
+    }
     '/organizer/events/new': {
       id: '/organizer/events/new'
       path: '/events/new'
@@ -1388,10 +1407,12 @@ const OrganizerRouteWithChildren = OrganizerRoute._addFileChildren(
 )
 
 interface PlannerCreditsRouteChildren {
+  PlannerCreditsBuyRoute: typeof PlannerCreditsBuyRoute
   PlannerCreditsIndexRoute: typeof PlannerCreditsIndexRoute
 }
 
 const PlannerCreditsRouteChildren: PlannerCreditsRouteChildren = {
+  PlannerCreditsBuyRoute: PlannerCreditsBuyRoute,
   PlannerCreditsIndexRoute: PlannerCreditsIndexRoute,
 }
 
