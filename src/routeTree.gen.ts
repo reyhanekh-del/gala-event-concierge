@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VenueRouteImport } from './routes/venue'
 import { Route as ScannerRouteImport } from './routes/scanner'
+import { Route as PlannerRouteImport } from './routes/planner'
 import { Route as OrganizerRouteImport } from './routes/organizer'
 import { Route as AppsRouteImport } from './routes/apps'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -72,6 +73,11 @@ const VenueRoute = VenueRouteImport.update({
 const ScannerRoute = ScannerRouteImport.update({
   id: '/scanner',
   path: '/scanner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlannerRoute = PlannerRouteImport.update({
+  id: '/planner',
+  path: '/planner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrganizerRoute = OrganizerRouteImport.update({
@@ -342,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/apps': typeof AppsRoute
   '/organizer': typeof OrganizerRouteWithChildren
+  '/planner': typeof PlannerRoute
   '/scanner': typeof ScannerRouteWithChildren
   '/venue': typeof VenueRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
@@ -396,6 +403,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/apps': typeof AppsRoute
+  '/planner': typeof PlannerRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/packages': typeof AdminPackagesRoute
@@ -449,6 +457,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/apps': typeof AppsRoute
   '/organizer': typeof OrganizerRouteWithChildren
+  '/planner': typeof PlannerRoute
   '/scanner': typeof ScannerRouteWithChildren
   '/venue': typeof VenueRouteWithChildren
   '/admin/audit': typeof AdminAuditRoute
@@ -507,6 +516,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/apps'
     | '/organizer'
+    | '/planner'
     | '/scanner'
     | '/venue'
     | '/admin/audit'
@@ -561,6 +571,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/apps'
+    | '/planner'
     | '/admin/audit'
     | '/admin/notifications'
     | '/admin/packages'
@@ -613,6 +624,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/apps'
     | '/organizer'
+    | '/planner'
     | '/scanner'
     | '/venue'
     | '/admin/audit'
@@ -670,6 +682,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AppsRoute: typeof AppsRoute
   OrganizerRoute: typeof OrganizerRouteWithChildren
+  PlannerRoute: typeof PlannerRoute
   ScannerRoute: typeof ScannerRouteWithChildren
   VenueRoute: typeof VenueRouteWithChildren
   InviteIdQrRoute: typeof InviteIdQrRoute
@@ -691,6 +704,13 @@ declare module '@tanstack/react-router' {
       path: '/scanner'
       fullPath: '/scanner'
       preLoaderRoute: typeof ScannerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planner': {
+      id: '/planner'
+      path: '/planner'
+      fullPath: '/planner'
+      preLoaderRoute: typeof PlannerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/organizer': {
@@ -1210,6 +1230,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AppsRoute: AppsRoute,
   OrganizerRoute: OrganizerRouteWithChildren,
+  PlannerRoute: PlannerRoute,
   ScannerRoute: ScannerRouteWithChildren,
   VenueRoute: VenueRouteWithChildren,
   InviteIdQrRoute: InviteIdQrRoute,
