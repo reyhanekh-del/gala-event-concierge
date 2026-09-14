@@ -24,6 +24,8 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as VenueRevenueRouteImport } from './routes/venue.revenue'
 import { Route as VenueAnalyticsRouteImport } from './routes/venue.analytics'
 import { Route as ScannerScanRouteImport } from './routes/scanner.scan'
+import { Route as PlannerLocationsRouteImport } from './routes/planner.locations'
+import { Route as PlannerEventsRouteImport } from './routes/planner.events'
 import { Route as OrganizerVerifyRouteImport } from './routes/organizer.verify'
 import { Route as OrganizerTransactionsRouteImport } from './routes/organizer.transactions'
 import { Route as OrganizerSplashRouteImport } from './routes/organizer.splash'
@@ -45,6 +47,8 @@ import { Route as AdminNotificationsRouteImport } from './routes/admin.notificat
 import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as VenueEventsIndexRouteImport } from './routes/venue.events.index'
 import { Route as VenueCreditsIndexRouteImport } from './routes/venue.credits.index'
+import { Route as PlannerLocationsIndexRouteImport } from './routes/planner.locations.index'
+import { Route as PlannerEventsIndexRouteImport } from './routes/planner.events.index'
 import { Route as OrganizerInviteIndexRouteImport } from './routes/organizer.invite.index'
 import { Route as OrganizerEventsIndexRouteImport } from './routes/organizer.events.index'
 import { Route as OrganizerDelegationIndexRouteImport } from './routes/organizer.delegation.index'
@@ -55,6 +59,7 @@ import { Route as VenueEventsNewRouteImport } from './routes/venue.events.new'
 import { Route as VenueEventsIdRouteImport } from './routes/venue.events.$id'
 import { Route as VenueCreditsBuyRouteImport } from './routes/venue.credits.buy'
 import { Route as ScannerResultStateRouteImport } from './routes/scanner.result.$state'
+import { Route as PlannerLocationsIdRouteImport } from './routes/planner.locations.$id'
 import { Route as OrganizerEventsNewRouteImport } from './routes/organizer.events.new'
 import { Route as OrganizerEventsIdRouteImport } from './routes/organizer.events.$id'
 import { Route as OrganizerDelegationAllocateRouteImport } from './routes/organizer.delegation.allocate'
@@ -140,6 +145,16 @@ const ScannerScanRoute = ScannerScanRouteImport.update({
   id: '/scan',
   path: '/scan',
   getParentRoute: () => ScannerRoute,
+} as any)
+const PlannerLocationsRoute = PlannerLocationsRouteImport.update({
+  id: '/locations',
+  path: '/locations',
+  getParentRoute: () => PlannerRoute,
+} as any)
+const PlannerEventsRoute = PlannerEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => PlannerRoute,
 } as any)
 const OrganizerVerifyRoute = OrganizerVerifyRouteImport.update({
   id: '/verify',
@@ -246,6 +261,16 @@ const VenueCreditsIndexRoute = VenueCreditsIndexRouteImport.update({
   path: '/credits/',
   getParentRoute: () => VenueRoute,
 } as any)
+const PlannerLocationsIndexRoute = PlannerLocationsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PlannerLocationsRoute,
+} as any)
+const PlannerEventsIndexRoute = PlannerEventsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PlannerEventsRoute,
+} as any)
 const OrganizerInviteIndexRoute = OrganizerInviteIndexRouteImport.update({
   id: '/invite/',
   path: '/invite/',
@@ -296,6 +321,11 @@ const ScannerResultStateRoute = ScannerResultStateRouteImport.update({
   id: '/result/$state',
   path: '/result/$state',
   getParentRoute: () => ScannerRoute,
+} as any)
+const PlannerLocationsIdRoute = PlannerLocationsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PlannerLocationsRoute,
 } as any)
 const OrganizerEventsNewRoute = OrganizerEventsNewRouteImport.update({
   id: '/events/new',
@@ -376,6 +406,8 @@ export interface FileRoutesByFullPath {
   '/organizer/splash': typeof OrganizerSplashRoute
   '/organizer/transactions': typeof OrganizerTransactionsRoute
   '/organizer/verify': typeof OrganizerVerifyRoute
+  '/planner/events': typeof PlannerEventsRouteWithChildren
+  '/planner/locations': typeof PlannerLocationsRouteWithChildren
   '/scanner/scan': typeof ScannerScanRoute
   '/venue/analytics': typeof VenueAnalyticsRoute
   '/venue/revenue': typeof VenueRevenueRoute
@@ -394,6 +426,7 @@ export interface FileRoutesByFullPath {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/planner/locations/$id': typeof PlannerLocationsIdRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
@@ -404,6 +437,8 @@ export interface FileRoutesByFullPath {
   '/organizer/delegation/': typeof OrganizerDelegationIndexRoute
   '/organizer/events/': typeof OrganizerEventsIndexRoute
   '/organizer/invite/': typeof OrganizerInviteIndexRoute
+  '/planner/events/': typeof PlannerEventsIndexRoute
+  '/planner/locations/': typeof PlannerLocationsIndexRoute
   '/venue/credits/': typeof VenueCreditsIndexRoute
   '/venue/events/': typeof VenueEventsIndexRoute
 }
@@ -445,6 +480,7 @@ export interface FileRoutesByTo {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/planner/locations/$id': typeof PlannerLocationsIdRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
@@ -455,6 +491,8 @@ export interface FileRoutesByTo {
   '/organizer/delegation': typeof OrganizerDelegationIndexRoute
   '/organizer/events': typeof OrganizerEventsIndexRoute
   '/organizer/invite': typeof OrganizerInviteIndexRoute
+  '/planner/events': typeof PlannerEventsIndexRoute
+  '/planner/locations': typeof PlannerLocationsIndexRoute
   '/venue/credits': typeof VenueCreditsIndexRoute
   '/venue/events': typeof VenueEventsIndexRoute
 }
@@ -486,6 +524,8 @@ export interface FileRoutesById {
   '/organizer/splash': typeof OrganizerSplashRoute
   '/organizer/transactions': typeof OrganizerTransactionsRoute
   '/organizer/verify': typeof OrganizerVerifyRoute
+  '/planner/events': typeof PlannerEventsRouteWithChildren
+  '/planner/locations': typeof PlannerLocationsRouteWithChildren
   '/scanner/scan': typeof ScannerScanRoute
   '/venue/analytics': typeof VenueAnalyticsRoute
   '/venue/revenue': typeof VenueRevenueRoute
@@ -504,6 +544,7 @@ export interface FileRoutesById {
   '/organizer/delegation/allocate': typeof OrganizerDelegationAllocateRoute
   '/organizer/events/$id': typeof OrganizerEventsIdRoute
   '/organizer/events/new': typeof OrganizerEventsNewRoute
+  '/planner/locations/$id': typeof PlannerLocationsIdRoute
   '/scanner/result/$state': typeof ScannerResultStateRoute
   '/venue/credits/buy': typeof VenueCreditsBuyRoute
   '/venue/events/$id': typeof VenueEventsIdRoute
@@ -514,6 +555,8 @@ export interface FileRoutesById {
   '/organizer/delegation/': typeof OrganizerDelegationIndexRoute
   '/organizer/events/': typeof OrganizerEventsIndexRoute
   '/organizer/invite/': typeof OrganizerInviteIndexRoute
+  '/planner/events/': typeof PlannerEventsIndexRoute
+  '/planner/locations/': typeof PlannerLocationsIndexRoute
   '/venue/credits/': typeof VenueCreditsIndexRoute
   '/venue/events/': typeof VenueEventsIndexRoute
 }
@@ -546,6 +589,8 @@ export interface FileRouteTypes {
     | '/organizer/splash'
     | '/organizer/transactions'
     | '/organizer/verify'
+    | '/planner/events'
+    | '/planner/locations'
     | '/scanner/scan'
     | '/venue/analytics'
     | '/venue/revenue'
@@ -564,6 +609,7 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
+    | '/planner/locations/$id'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
     | '/venue/events/$id'
@@ -574,6 +620,8 @@ export interface FileRouteTypes {
     | '/organizer/delegation/'
     | '/organizer/events/'
     | '/organizer/invite/'
+    | '/planner/events/'
+    | '/planner/locations/'
     | '/venue/credits/'
     | '/venue/events/'
   fileRoutesByTo: FileRoutesByTo
@@ -615,6 +663,7 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
+    | '/planner/locations/$id'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
     | '/venue/events/$id'
@@ -625,6 +674,8 @@ export interface FileRouteTypes {
     | '/organizer/delegation'
     | '/organizer/events'
     | '/organizer/invite'
+    | '/planner/events'
+    | '/planner/locations'
     | '/venue/credits'
     | '/venue/events'
   id:
@@ -655,6 +706,8 @@ export interface FileRouteTypes {
     | '/organizer/splash'
     | '/organizer/transactions'
     | '/organizer/verify'
+    | '/planner/events'
+    | '/planner/locations'
     | '/scanner/scan'
     | '/venue/analytics'
     | '/venue/revenue'
@@ -673,6 +726,7 @@ export interface FileRouteTypes {
     | '/organizer/delegation/allocate'
     | '/organizer/events/$id'
     | '/organizer/events/new'
+    | '/planner/locations/$id'
     | '/scanner/result/$state'
     | '/venue/credits/buy'
     | '/venue/events/$id'
@@ -683,6 +737,8 @@ export interface FileRouteTypes {
     | '/organizer/delegation/'
     | '/organizer/events/'
     | '/organizer/invite/'
+    | '/planner/events/'
+    | '/planner/locations/'
     | '/venue/credits/'
     | '/venue/events/'
   fileRoutesById: FileRoutesById
@@ -806,6 +862,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/scanner/scan'
       preLoaderRoute: typeof ScannerScanRouteImport
       parentRoute: typeof ScannerRoute
+    }
+    '/planner/locations': {
+      id: '/planner/locations'
+      path: '/locations'
+      fullPath: '/planner/locations'
+      preLoaderRoute: typeof PlannerLocationsRouteImport
+      parentRoute: typeof PlannerRoute
+    }
+    '/planner/events': {
+      id: '/planner/events'
+      path: '/events'
+      fullPath: '/planner/events'
+      preLoaderRoute: typeof PlannerEventsRouteImport
+      parentRoute: typeof PlannerRoute
     }
     '/organizer/verify': {
       id: '/organizer/verify'
@@ -954,6 +1024,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VenueCreditsIndexRouteImport
       parentRoute: typeof VenueRoute
     }
+    '/planner/locations/': {
+      id: '/planner/locations/'
+      path: '/'
+      fullPath: '/planner/locations/'
+      preLoaderRoute: typeof PlannerLocationsIndexRouteImport
+      parentRoute: typeof PlannerLocationsRoute
+    }
+    '/planner/events/': {
+      id: '/planner/events/'
+      path: '/'
+      fullPath: '/planner/events/'
+      preLoaderRoute: typeof PlannerEventsIndexRouteImport
+      parentRoute: typeof PlannerEventsRoute
+    }
     '/organizer/invite/': {
       id: '/organizer/invite/'
       path: '/invite'
@@ -1023,6 +1107,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/scanner/result/$state'
       preLoaderRoute: typeof ScannerResultStateRouteImport
       parentRoute: typeof ScannerRoute
+    }
+    '/planner/locations/$id': {
+      id: '/planner/locations/$id'
+      path: '/$id'
+      fullPath: '/planner/locations/$id'
+      preLoaderRoute: typeof PlannerLocationsIdRouteImport
+      parentRoute: typeof PlannerLocationsRoute
     }
     '/organizer/events/new': {
       id: '/organizer/events/new'
@@ -1203,11 +1294,40 @@ const OrganizerRouteWithChildren = OrganizerRoute._addFileChildren(
   OrganizerRouteChildren,
 )
 
+interface PlannerEventsRouteChildren {
+  PlannerEventsIndexRoute: typeof PlannerEventsIndexRoute
+}
+
+const PlannerEventsRouteChildren: PlannerEventsRouteChildren = {
+  PlannerEventsIndexRoute: PlannerEventsIndexRoute,
+}
+
+const PlannerEventsRouteWithChildren = PlannerEventsRoute._addFileChildren(
+  PlannerEventsRouteChildren,
+)
+
+interface PlannerLocationsRouteChildren {
+  PlannerLocationsIdRoute: typeof PlannerLocationsIdRoute
+  PlannerLocationsIndexRoute: typeof PlannerLocationsIndexRoute
+}
+
+const PlannerLocationsRouteChildren: PlannerLocationsRouteChildren = {
+  PlannerLocationsIdRoute: PlannerLocationsIdRoute,
+  PlannerLocationsIndexRoute: PlannerLocationsIndexRoute,
+}
+
+const PlannerLocationsRouteWithChildren =
+  PlannerLocationsRoute._addFileChildren(PlannerLocationsRouteChildren)
+
 interface PlannerRouteChildren {
+  PlannerEventsRoute: typeof PlannerEventsRouteWithChildren
+  PlannerLocationsRoute: typeof PlannerLocationsRouteWithChildren
   PlannerIndexRoute: typeof PlannerIndexRoute
 }
 
 const PlannerRouteChildren: PlannerRouteChildren = {
+  PlannerEventsRoute: PlannerEventsRouteWithChildren,
+  PlannerLocationsRoute: PlannerLocationsRouteWithChildren,
   PlannerIndexRoute: PlannerIndexRoute,
 }
 
